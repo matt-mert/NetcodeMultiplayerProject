@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +11,14 @@ public class NetworkManagerUI : MonoBehaviour
     private Button hostButton;
     [SerializeField]
     private Button clientButton;
+    [SerializeField]
+    private Button createRelayButton;
+    [SerializeField]
+    private Button joinRelayButton;
+    [SerializeField]
+    private TMP_InputField inputField;
+    [SerializeField]
+    private TestRelay testRelay;
 
     private void Awake()
     {
@@ -24,6 +33,15 @@ public class NetworkManagerUI : MonoBehaviour
         clientButton.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartClient();
+        });
+        createRelayButton.onClick.AddListener(() =>
+        {
+            testRelay.CreateRelay();
+        });
+        joinRelayButton.onClick.AddListener(() =>
+        {
+            string str = inputField.text;
+            testRelay.JoinRelay(str);
         });
     }
 

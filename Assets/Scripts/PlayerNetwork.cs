@@ -10,25 +10,11 @@ public class PlayerNetwork : NetworkBehaviour
     private PlayerInput playerInput;
     private InputAction moveAction;
     private Vector2 inputVector;
-    private Vector2 testVector;
 
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
-        if (!IsOwner) return;
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["Move"];
-    }
-
-    private void OnEnable()
-    {
-        if (!IsOwner) return;
-        moveAction.performed += GetInput;
-    }
-
-    private void OnDisable()
-    {
-        if (!IsOwner) return;
-        moveAction.performed -= GetInput;
     }
 
     private void Update()
@@ -42,11 +28,5 @@ public class PlayerNetwork : NetworkBehaviour
         if (!IsOwner) return;
         Vector3 moveVector = new Vector3(inputVector.x, 0, inputVector.y);
         transform.Translate(moveVector * playerSpeed * Time.fixedDeltaTime);
-    }
-
-    private void GetInput(InputAction.CallbackContext ctx)
-    {
-        if (!IsOwner) return;
-        testVector = ctx.ReadValue<Vector2>();
     }
 }
