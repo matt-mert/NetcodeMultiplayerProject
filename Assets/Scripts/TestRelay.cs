@@ -8,7 +8,7 @@ using Unity.Netcode.Transports.UTP;
 using TMPro;
 using Unity.Networking.Transport.Relay;
 
-public class TestRelay : MonoBehaviour
+public class TestRelay : NetworkBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI tmp;

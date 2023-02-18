@@ -9,12 +9,15 @@ public class PlayerNetwork : NetworkBehaviour
 
     private PlayerInput playerInput;
     private InputAction moveAction;
+    private InputAction toggleAction;
     private Vector2 inputVector;
 
     public override void OnNetworkSpawn()
     {
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["Move"];
+        toggleAction = playerInput.actions["Toggle"];
+        if (IsOwner && IsClient && !IsHost) PlayerCamera.Instance.AdjustAngle();
     }
 
     private void Update()

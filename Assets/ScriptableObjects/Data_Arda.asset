@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: Arda
   cardDesc: Lil Nibba
-  cardTexture: {fileID: 2800000, guid: d160fe7e25fec8c45ac7e92a06fac1bf, type: 3}
+  cardType: Unit
+  cardTexture: {fileID: 2800000, guid: 562b46c16eca0f249965b36a5f33e1e0, type: 3}
   spawnEnergy: 2
   moveEnergy: 2
   cardPower: 5

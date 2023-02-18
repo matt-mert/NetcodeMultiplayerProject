@@ -5,6 +5,7 @@ public class GameCard : ScriptableObject
 {
     public string cardName;
     public string cardDesc;
+    public string cardType;
     public Texture cardTexture;
     public int spawnEnergy;
     public int moveEnergy;

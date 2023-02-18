@@ -1,7 +1,7 @@
 using Cinemachine;
 using UnityEngine;
 
-public class PlayerCamera : MonoBehaviour
+public class PlayerCamera : Singleton<PlayerCamera>
 {
     private CinemachineVirtualCamera cmvc;
 
@@ -12,6 +12,6 @@ public class PlayerCamera : MonoBehaviour
 
     public void AdjustAngle()
     {
-        
+        cmvc.transform.Rotate(new Vector3(0, 0, 180));
     }
 }
