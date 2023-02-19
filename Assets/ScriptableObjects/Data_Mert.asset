@@ -15,7 +15,7 @@ MonoBehaviour:
   cardName: Mert
   cardDesc: BigBallz
   cardType: Unit
-  cardTexture: {fileID: 2800000, guid: 7d34fa118374b9f48af2eae1841af92e, type: 3}
+  cardMaterial: {fileID: 2100000, guid: d1b8f199f5a1242409e0850998cf529e, type: 2}
   spawnEnergy: 0
   moveEnergy: 1
   cardPower: 1

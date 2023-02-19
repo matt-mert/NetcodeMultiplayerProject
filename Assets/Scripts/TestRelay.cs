@@ -5,16 +5,19 @@ using Unity.Services.Relay.Models;
 using Unity.Netcode;
 using UnityEngine;
 using Unity.Netcode.Transports.UTP;
-using TMPro;
 using Unity.Networking.Transport.Relay;
 
 public class TestRelay : NetworkBehaviour
 {
-    [SerializeField]
-    private TextMeshProUGUI tmp;
+    public delegate void HostStarted();
+    public event HostStarted OnHostStarted;
+
+    [HideInInspector]
+    public string joinCode = " ";
 
     private async void Start()
     {
+        if (GameStates.Instance.currentState != GameStates.GameState.menu) return;
         await UnityServices.InitializeAsync();
         AuthenticationService.Instance.SignedIn += () =>
         {
@@ -27,13 +30,12 @@ public class TestRelay : NetworkBehaviour
     {
         try
         {
-            Allocation alloc = await RelayService.Instance.CreateAllocationAsync(3);
-            string joinCode = await RelayService.Instance.GetJoinCodeAsync(alloc.AllocationId);
-            tmp.text = joinCode;
+            Allocation alloc = await RelayService.Instance.CreateAllocationAsync(2);
+            joinCode = await RelayService.Instance.GetJoinCodeAsync(alloc.AllocationId);
             RelayServerData relayServerData = new RelayServerData(alloc, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
-
             NetworkManager.Singleton.StartHost();
+            OnHostStarted.Invoke();
         }
         catch (RelayServiceException e)
         {
@@ -48,7 +50,6 @@ public class TestRelay : NetworkBehaviour
             JoinAllocation alloc = await RelayService.Instance.JoinAllocationAsync(code);
             RelayServerData relayServerData = new RelayServerData(alloc, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
-
             NetworkManager.Singleton.StartClient();
         }
         catch (RelayServiceException e)

@@ -1,18 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class GameStates : MonoBehaviour
+public class GameStates : NetworkSingleton<GameStates>
 {
-    // Start is called before the first frame update
-    void Start()
+    public enum GameState
     {
-        
+        menu,
+        game
     }
 
-    // Update is called once per frame
-    void Update()
+    [HideInInspector]
+    public GameState currentState;
+
+    public void OnClientConnect()
     {
         
+
+        if (NetworkManager.Singleton.ConnectedClients.Count == 2)
+        {
+
+        }
+    }
+
+    public void OnClientDisconnect()
+    {
+
     }
 }
