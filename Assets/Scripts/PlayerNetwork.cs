@@ -26,7 +26,6 @@ public class PlayerNetwork : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        GameStates.Instance.currentState = GameStates.GameState.menu;
         playerCamera = Camera.main;
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions["Move"];
@@ -47,56 +46,61 @@ public class PlayerNetwork : NetworkBehaviour
     private void OnConnectedToServer()
     {
         if (!IsOwner) return;
-        if (NetworkManager.Singleton.ConnectedClients.Count == 2)
-        {
-            NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
-        }
+
+        if (IsClient && !IsHost) PlayerCamera.Instance.AdjustAngle();
+        transform.Rotate(new Vector3(0, 0, 180));
     }
 
     private void Update()
     {
         if (!IsOwner) return;
+
         inputVector = moveAction.ReadValue<Vector2>();
         primaryPositionVector = primaryPosition.ReadValue<Vector2>();
         if (toggleAction.triggered)
         {
             NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
-            GameStates.Instance.currentState = GameStates.GameState.game;
         }
     }
 
     private void FixedUpdate()
     {
         if (!IsOwner) return;
+
         Vector3 moveVector = new Vector3(inputVector.x, 0, inputVector.y);
         transform.Translate(moveVector * playerSpeed * Time.fixedDeltaTime);
     }
 
     private void OnSceneChanged(Scene current, Scene next)
     {
+        if (!IsOwner) return;
+
         playerCamera = Camera.main;
     }
 
     private void StartTouchPrimary(InputAction.CallbackContext context)
     {
-        if (OnStartTouch == null) return;
         if (!IsOwner) return;
+
+        if (OnStartTouch == null) return;
         Ray touchRay = playerCamera.ScreenPointToRay(primaryPositionVector);
         OnStartTouch(touchRay, (float)context.startTime);
     }
 
     private void DuringTouchPrimary(InputAction.CallbackContext context)
     {
-        if (OnDuringTouch == null) return;
         if (!IsOwner) return;
+
+        if (OnDuringTouch == null) return;
         Ray touchRay = playerCamera.ScreenPointToRay(primaryPositionVector);
         OnDuringTouch(touchRay, (float)context.time);
     }
 
     private void EndTouchPrimary(InputAction.CallbackContext context)
     {
-        if (OnEndTouch == null) return;
         if (!IsOwner) return;
+
+        if (OnEndTouch == null) return;
         Ray touchRay = playerCamera.ScreenPointToRay(primaryPositionVector);
         OnEndTouch(touchRay, (float)context.startTime);
     }

@@ -13,35 +13,31 @@ public class NetworkManagerUI : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI codeText;
 
-    private TestRelay testRelay;
-
     private void Awake()
     {
-        testRelay = FindObjectOfType<TestRelay>();
-
         createRelayButton.onClick.AddListener(() =>
         {
-            testRelay.CreateRelay();
+            ConnectionManager.Instance.CreateRelay();
         });
         joinRelayButton.onClick.AddListener(() =>
         {
             string str = inputField.text;
-            testRelay.JoinRelay(str);
+            ConnectionManager.Instance.JoinRelay(str);
         });
     }
 
     private void OnEnable()
     {
-        testRelay.OnHostStarted += ApplyCodeToText;
+        ConnectionManager.Instance.OnHostStarted += ApplyCodeToText;
     }
 
     private void OnDisable()
     {
-        testRelay.OnHostStarted -= ApplyCodeToText;
+        ConnectionManager.Instance.OnHostStarted -= ApplyCodeToText;
     }
 
     private void ApplyCodeToText()
     {
-        codeText.text = testRelay.joinCode;
+        codeText.text = ConnectionManager.Instance.joinCode;
     }
 }
