@@ -44,7 +44,7 @@ ExportedObj/
 *.svd
 *.pdb
 *.mdb
-*.vb linguist-generated
+*.vb
 *.opendb
 *.VC.db
 
