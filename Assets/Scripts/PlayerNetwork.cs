@@ -1,3 +1,4 @@
+using Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -23,15 +24,11 @@ public class PlayerNetwork : NetworkBehaviour
     private Vector2 inputVector;
     private Vector2 primaryPositionVector;
     private Camera playerCamera;
+    private CinemachineVirtualCamera cmvc;
 
     public override void OnNetworkSpawn()
     {
-        playerCamera = Camera.main;
-        playerInput = GetComponent<PlayerInput>();
-        moveAction = playerInput.actions["Move"];
-        toggleAction = playerInput.actions["Toggle"];
-        primaryContact = playerInput.actions["PrimaryContact"];
-        primaryPosition = playerInput.actions["PrimaryPosition"];
+        InitialConfigurations();
         primaryContact.started += ctx => StartTouchPrimary(ctx);
         primaryPosition.performed += ctx => DuringTouchPrimary(ctx);
         primaryContact.canceled += ctx => EndTouchPrimary(ctx);
@@ -39,16 +36,34 @@ public class PlayerNetwork : NetworkBehaviour
         NetworkManager.Singleton.OnClientConnectedCallback += ctx => GameStates.Instance.OnClientConnect();
         NetworkManager.Singleton.OnClientDisconnectCallback += ctx => GameStates.Instance.OnClientDisconnect();
 
-        if (IsOwner && IsClient && !IsHost) PlayerCamera.Instance.AdjustAngle();
-        transform.Rotate(new Vector3(0, 0, 180));
+        toggleAction.started += ctx => TestCode();
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        primaryContact.started -= ctx => StartTouchPrimary(ctx);
+        primaryPosition.performed -= ctx => DuringTouchPrimary(ctx);
+        primaryContact.canceled -= ctx => EndTouchPrimary(ctx);
+        SceneManager.activeSceneChanged -= OnSceneChanged;
+        NetworkManager.Singleton.OnClientConnectedCallback -= ctx => GameStates.Instance.OnClientConnect();
+        NetworkManager.Singleton.OnClientDisconnectCallback -= ctx => GameStates.Instance.OnClientDisconnect();
+
+        toggleAction.started -= ctx => TestCode();
+    }
+
+    private void InitialConfigurations()
+    {
+        playerCamera = Camera.main;
+        playerInput = GetComponent<PlayerInput>();
+        moveAction = playerInput.actions["Move"];
+        toggleAction = playerInput.actions["Toggle"];
+        primaryContact = playerInput.actions["PrimaryContact"];
+        primaryPosition = playerInput.actions["PrimaryPosition"];
     }
 
     private void OnConnectedToServer()
     {
         if (!IsOwner) return;
-
-        if (IsClient && !IsHost) PlayerCamera.Instance.AdjustAngle();
-        transform.Rotate(new Vector3(0, 0, 180));
     }
 
     private void Update()
@@ -57,10 +72,6 @@ public class PlayerNetwork : NetworkBehaviour
 
         inputVector = moveAction.ReadValue<Vector2>();
         primaryPositionVector = primaryPosition.ReadValue<Vector2>();
-        if (toggleAction.triggered)
-        {
-            NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
-        }
     }
 
     private void FixedUpdate()
@@ -73,9 +84,35 @@ public class PlayerNetwork : NetworkBehaviour
 
     private void OnSceneChanged(Scene current, Scene next)
     {
+        // Game state client tarafinda degismiyor.
+
         if (!IsOwner) return;
 
-        playerCamera = Camera.main;
+        InitialConfigurations();
+        GameStates.Instance.ChangeStateToInitial();
+
+        if (!IsHost)
+        {
+            cmvc = FindObjectOfType<CinemachineVirtualCamera>();
+            cmvc.transform.Rotate(new Vector3(0, 0, 180));
+            transform.Rotate(new Vector3(0, 0, 180));
+        }
+    }
+
+    private void TestCode()
+    {
+        if (GameStates.Instance.currentState == GameStates.GameState.menu)
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+        }
+        else if (GameStates.Instance.currentState == GameStates.GameState.initial)
+        {
+            GameStates.Instance.ChangeStateToStart();
+        }
+        else if (GameStates.Instance.currentState == GameStates.GameState.start)
+        {
+            GameStates.Instance.ChangeStateToInitial();
+        }
     }
 
     private void StartTouchPrimary(InputAction.CallbackContext context)

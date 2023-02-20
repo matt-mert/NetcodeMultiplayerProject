@@ -16,7 +16,7 @@ public class NetworkSingleton<T> : NetworkBehaviour where T : Component
                 if (instance == null)
                 {
                     GameObject obj = new GameObject();
-                    obj.name = string.Format("_{0}", typeof(T).Name);
+                    obj.name = string.Format("{0}", typeof(T).Name);
                     instance = obj.AddComponent<T>();
                 }
             }

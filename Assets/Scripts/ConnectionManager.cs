@@ -10,8 +10,10 @@ using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using UnityEngine;
 
-public class ConnectionManager : NetworkSingleton<ConnectionManager>
+public class ConnectionManager : NetworkBehaviour
 {
+    public static ConnectionManager Instance { get; private set; }
+
     public delegate void HostStarted();
     public event HostStarted OnHostStarted;
 
@@ -20,6 +22,19 @@ public class ConnectionManager : NetworkSingleton<ConnectionManager>
 
     private Lobby hostLobby;
     private Lobby joinedLobby;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private async void Start()
     {
@@ -31,7 +46,7 @@ public class ConnectionManager : NetworkSingleton<ConnectionManager>
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
-    private async void CreateLobby()
+    public async void CreateLobby()
     {
         try
         {
@@ -48,7 +63,7 @@ public class ConnectionManager : NetworkSingleton<ConnectionManager>
         }
     }
 
-    private async void JoinLobby()
+    public async void JoinLobby()
     {
         try
         {

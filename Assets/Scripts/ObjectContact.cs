@@ -2,7 +2,11 @@ using UnityEngine;
 
 public class ObjectContact : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject contactPrefab;
+
     private PlayerNetwork playerNetwork;
+    private GameObject instantiated;
     private Vector3 startPosition;
     private float startTime;
     private float endTime;
@@ -20,6 +24,10 @@ public class ObjectContact : MonoBehaviour
         playerNetwork.OnStartTouch += DragStart;
         playerNetwork.OnDuringTouch += DragPeriod;
         playerNetwork.OnEndTouch += DragEnd;
+        GameStates.Instance.OnStateChangedToInitial += CreateContactArea;
+        GameStates.Instance.OnStateChangedToStart += RotateContactArea;
+        GameStates.Instance.OnStateChangedToPlayer2 += ShowContactArea;
+        GameStates.Instance.OnStateChangedToOpponent1 += HideContactArea;
     }
 
     private void OnDisable()
@@ -27,6 +35,30 @@ public class ObjectContact : MonoBehaviour
         playerNetwork.OnStartTouch -= DragStart;
         playerNetwork.OnDuringTouch -= DragPeriod;
         playerNetwork.OnEndTouch -= DragEnd;
+        GameStates.Instance.OnStateChangedToInitial -= CreateContactArea;
+        GameStates.Instance.OnStateChangedToStart -= RotateContactArea;
+        GameStates.Instance.OnStateChangedToPlayer2 -= ShowContactArea;
+        GameStates.Instance.OnStateChangedToOpponent1 -= HideContactArea;
+    }
+
+    private void CreateContactArea()
+    {
+        instantiated = Instantiate(contactPrefab, transform.position, Quaternion.identity);
+    }
+
+    private void RotateContactArea()
+    {
+        instantiated.transform.Rotate(new Vector3(0, 180, 0));
+    }
+
+    private void ShowContactArea()
+    {
+        instantiated.SetActive(true);
+    }
+
+    private void HideContactArea()
+    {
+        instantiated.SetActive(false);
     }
 
     private void DragStart(Ray ray, float time)
