@@ -1,2 +1,2 @@
-# CardGame3D
-3D card game made with Unity Engine.
+# NetcodeMultiplayerProject
+3D multiplayer peer-to-peer relay connected card game made with Unity Engine.
