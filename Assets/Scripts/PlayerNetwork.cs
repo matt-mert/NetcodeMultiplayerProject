@@ -1,4 +1,3 @@
-using Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,13 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class PlayerNetwork : NetworkBehaviour
 {
-    public delegate void StartTouch(Ray ray, float time);
-    public event StartTouch OnStartTouch;
-    public delegate void DuringTouch(Ray ray, float time);
-    public event DuringTouch OnDuringTouch;
-    public delegate void EndTouch(Ray ray, float time);
-    public event EndTouch OnEndTouch;
-
     [SerializeField]
     private float playerSpeed = 10.0f;
 
@@ -24,7 +16,14 @@ public class PlayerNetwork : NetworkBehaviour
     private Vector2 inputVector;
     private Vector2 primaryPositionVector;
     private Camera playerCamera;
-    private CinemachineVirtualCamera cmvc;
+    private GameObject draggedObject;
+    private Vector3 startPosition;
+    private Vector3 startScale;
+    private float startTime;
+    private float endTime;
+
+    [HideInInspector]
+    public bool IsDragging;
 
     public override void OnNetworkSpawn()
     {
@@ -90,55 +89,79 @@ public class PlayerNetwork : NetworkBehaviour
 
         InitialConfigurations();
         GameStates.Instance.ChangeStateToInitial();
+    }
 
-        if (!IsHost)
-        {
-            cmvc = FindObjectOfType<CinemachineVirtualCamera>();
-            cmvc.transform.Rotate(new Vector3(0, 0, 180));
-            transform.Rotate(new Vector3(0, 0, 180));
-        }
+    private void ChangeSceneToGame()
+    {
+        NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
     }
 
     private void TestCode()
     {
-        if (GameStates.Instance.currentState == GameStates.GameState.menu)
-        {
-            NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
-        }
-        else if (GameStates.Instance.currentState == GameStates.GameState.initial)
-        {
-            GameStates.Instance.ChangeStateToStart();
-        }
-        else if (GameStates.Instance.currentState == GameStates.GameState.start)
-        {
-            GameStates.Instance.ChangeStateToInitial();
-        }
+        NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
     }
 
     private void StartTouchPrimary(InputAction.CallbackContext context)
     {
         if (!IsOwner) return;
 
-        if (OnStartTouch == null) return;
+        //if (OnStartTouch == null) return;
         Ray touchRay = playerCamera.ScreenPointToRay(primaryPositionVector);
-        OnStartTouch(touchRay, (float)context.startTime);
+        //OnStartTouch(touchRay, (float)context.startTime);
+        
+        RaycastHit checkHit;
+        if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("PlayerCard")))
+        {
+            draggedObject = checkHit.transform.gameObject;
+            startPosition = draggedObject.transform.position;
+            startScale = draggedObject.transform.localScale;
+            startTime = (float)context.time;
+            draggedObject.transform.localScale = startScale * 2f;
+            draggedObject.transform.position = checkHit.point;
+            IsDragging = true;
+        }
+
     }
 
     private void DuringTouchPrimary(InputAction.CallbackContext context)
     {
         if (!IsOwner) return;
 
-        if (OnDuringTouch == null) return;
+        if (draggedObject == null) return;
+
+        //if (OnDuringTouch == null) return;
         Ray touchRay = playerCamera.ScreenPointToRay(primaryPositionVector);
-        OnDuringTouch(touchRay, (float)context.time);
+        //OnDuringTouch(touchRay, (float)context.time);
+
+        RaycastHit checkHit;
+        if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("TablePlane")))
+        {
+            draggedObject.transform.position = checkHit.point;
+        }
+        else
+        {
+            endTime = (float)context.time;
+            draggedObject.transform.position = startPosition;
+            draggedObject.transform.localScale = startScale;
+            draggedObject = null;
+            IsDragging = false;
+        }
     }
 
     private void EndTouchPrimary(InputAction.CallbackContext context)
     {
         if (!IsOwner) return;
 
-        if (OnEndTouch == null) return;
+        if (draggedObject == null) return;
+
+        //if (OnEndTouch == null) return;
         Ray touchRay = playerCamera.ScreenPointToRay(primaryPositionVector);
-        OnEndTouch(touchRay, (float)context.startTime);
+        //OnEndTouch(touchRay, (float)context.startTime);
+
+        endTime = (float)context.time;
+        draggedObject.transform.position = startPosition;
+        draggedObject.transform.localScale = startScale;
+        draggedObject = null;
+        IsDragging = false;
     }
 }

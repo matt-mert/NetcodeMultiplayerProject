@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,12 +29,12 @@ public class NetworkManagerUI : MonoBehaviour
 
     private void OnEnable()
     {
-        ConnectionManager.Instance.OnHostStarted += ApplyCodeToText;
+        NetworkManager.Singleton.OnServerStarted += ApplyCodeToText;
     }
 
     private void OnDisable()
     {
-        ConnectionManager.Instance.OnHostStarted -= ApplyCodeToText;
+        NetworkManager.Singleton.OnServerStarted -= ApplyCodeToText;
     }
 
     private void ApplyCodeToText()

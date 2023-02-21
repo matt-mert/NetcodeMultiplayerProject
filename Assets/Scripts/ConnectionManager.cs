@@ -14,9 +14,6 @@ public class ConnectionManager : NetworkBehaviour
 {
     public static ConnectionManager Instance { get; private set; }
 
-    public delegate void HostStarted();
-    public event HostStarted OnHostStarted;
-
     [HideInInspector]
     public string joinCode = " ";
 
@@ -166,7 +163,6 @@ public class ConnectionManager : NetworkBehaviour
             RelayServerData relayServerData = new RelayServerData(alloc, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             NetworkManager.Singleton.StartHost();
-            OnHostStarted.Invoke();
         }
         catch (RelayServiceException e)
         {

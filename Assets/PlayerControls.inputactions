@@ -29,7 +29,7 @@
                     "id": "81da7b9d-5dac-4f53-a159-1fa611c2298b",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press",
+                    "interactions": "",
                     "initialStateCheck": false
                 },
                 {
@@ -40,6 +40,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ContactBackup",
+                    "type": "Button",
+                    "id": "14828862-974b-45af-8ecc-875203da0750",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PositionBackup",
+                    "type": "Button",
+                    "id": "6e4a9b34-897f-4b67-bdd1-983c7720f4ee",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -122,17 +140,6 @@
                 },
                 {
                     "name": "",
-                    "id": "9eb1e513-343d-46b3-9e52-ce5a653c70e0",
-                    "path": "<Mouse>/press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "PrimaryContact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "94b25060-98a3-42ce-857b-5292274d39a5",
                     "path": "<Touchscreen>/primaryTouch/position",
                     "interactions": "",
@@ -144,12 +151,23 @@
                 },
                 {
                     "name": "",
-                    "id": "f3ac3104-082d-4358-90ad-a6cc9d8a4c54",
+                    "id": "7ce730db-4ea0-4f3a-aed0-effdfd99099f",
                     "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PrimaryPosition",
+                    "action": "PositionBackup",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6138d230-5daa-4f7a-96d2-9297c0ad9791",
+                    "path": "<Mouse>/press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ContactBackup",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

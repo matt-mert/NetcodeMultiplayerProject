@@ -12,23 +12,23 @@ TagManager:
   - Water
   - UI
   - TablePlane
-  - SpawnPlane1
-  - SpawnPlane2
-  - SpawnPlane3
-  - SpawnPlane4
-  - SpawnPlane5
-  - MidPlane1
-  - MidPlane2
-  - MidPlane3
-  - MidPlane4
-  - MidPlane5
-  - EnemyPlane1
-  - EnemyPlane2
-  - EnemyPlane3
-  - EnemyPlane4
-  - EnemyPlane5
-  - 
-  - 
+  - MidSide
+  - FarSouth1
+  - FarSouth2
+  - FarSouth3
+  - MidSouth1
+  - MidSouth2
+  - MidSouth3
+  - MidNorth1
+  - MidNorth2
+  - MidNorth3
+  - FarNorth1
+  - FarNorth2
+  - FarNorth3
+  - NorthBase
+  - SouthBase
+  - EnemyCard
+  - Shadows
   - 
   - 
   - 
