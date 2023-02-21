@@ -484,7 +484,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 900, y: 1450}
+  m_SizeDelta: {x: 900, y: 1200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &442533899
 MonoBehaviour:
@@ -1802,6 +1802,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCard
       objectReference: {fileID: 0}
+    - target: {fileID: 3822896192661642547, guid: 34f5b39e8a60d9e4791f25ec966818e5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3822896192661642548, guid: 34f5b39e8a60d9e4791f25ec966818e5,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -1861,6 +1866,13 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3822896192727596476, guid: 34f5b39e8a60d9e4791f25ec966818e5,
+        type: 3}
+      propertyPath: m_text
+      value: '0
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 3822896193432228577, guid: 34f5b39e8a60d9e4791f25ec966818e5,
         type: 3}
@@ -3073,6 +3085,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EnemyCard
+      objectReference: {fileID: 0}
+    - target: {fileID: 444701593150942330, guid: 5044823258324524d9664a3a7941adc9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 444701593150942333, guid: 5044823258324524d9664a3a7941adc9,
         type: 3}
