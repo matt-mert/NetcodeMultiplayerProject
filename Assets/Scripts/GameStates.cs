@@ -52,10 +52,7 @@ public class GameStates : NetworkBehaviour
         {
             Destroy(gameObject);
         }
-    }
 
-    public override void OnNetworkSpawn()
-    {
         currentState = GameState.menu;
     }
 
@@ -73,7 +70,7 @@ public class GameStates : NetworkBehaviour
     public void ChangeStateToInitialClientRpc()
     {
         Debug.Log("Changing state to initial...");
-        NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
         currentState = GameState.initial;
         if (OnStateChangedToInitial == null) return;
         OnStateChangedToInitial.Invoke();

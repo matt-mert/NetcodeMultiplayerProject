@@ -28,7 +28,7 @@ public class PlayerNetwork : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         InitialConfigurations();
-        SceneManager.activeSceneChanged += OnSceneChanged;
+        NetworkManager.Singleton.SceneManager.OnLoadComplete += OnSceneChanged;
         Touch.onFingerDown += FingerDown;
 
         toggleAction.started += ctx => TestCode();
@@ -36,7 +36,8 @@ public class PlayerNetwork : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        SceneManager.activeSceneChanged -= OnSceneChanged;
+        NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnSceneChanged;
+        Touch.onFingerDown -= FingerDown;
 
         toggleAction.started -= ctx => TestCode();
     }
@@ -107,7 +108,7 @@ public class PlayerNetwork : NetworkBehaviour
         StopCoroutine(DragUpdate(draggingObject));
     }
 
-    private void OnSceneChanged(Scene current, Scene next)
+    private void OnSceneChanged(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
     {
         if (!IsOwner) return;
 
@@ -116,6 +117,16 @@ public class PlayerNetwork : NetworkBehaviour
 
     private void TestCode()
     {
-        GameStates.Instance.ChangeStateToInitialClientRpc();
+        if (GameStates.Instance.currentState == GameStates.GameState.menu)
+        {
+            GameStates.Instance.ChangeStateToInitialClientRpc();
+            return;
+        }
+
+        else
+        {
+            GameStates.Instance.ChangeStateToStartClientRpc();
+            return;
+        }
     }
 }
