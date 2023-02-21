@@ -1,5 +1,6 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameStates : NetworkBehaviour
 {
@@ -53,82 +54,91 @@ public class GameStates : NetworkBehaviour
         }
     }
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        Debug.Log("Initial state is set to menu...");
         currentState = GameState.menu;
     }
 
-    public void ChangeStateToMenu()
+    [ClientRpc]
+    public void ChangeStateToMenuClientRpc()
     {
         Debug.Log("Changing state to menu...");
+        NetworkManager.Singleton.SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
         currentState = GameState.menu;
+        if (OnStateChangedToMenu == null) return;
         OnStateChangedToMenu.Invoke();
     }
 
-    public void ChangeStateToInitial()
+    [ClientRpc]
+    public void ChangeStateToInitialClientRpc()
     {
         Debug.Log("Changing state to initial...");
+        NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
         currentState = GameState.initial;
+        if (OnStateChangedToInitial == null) return;
         OnStateChangedToInitial.Invoke();
     }
 
-    public void ChangeStateToStart()
+    [ClientRpc]
+    public void ChangeStateToStartClientRpc()
     {
         Debug.Log("Changing state to start...");
         currentState = GameState.start;
+        if (OnStateChangedToStart == null) return;
         OnStateChangedToStart.Invoke();
     }
 
-    public void ChangeStateToPlayer1()
+    [ClientRpc]
+    public void ChangeStateToPlayer1ClientRpc()
     {
         Debug.Log("Changing state to player1...");
         currentState = GameState.player1;
+        if (OnStateChangedToPlayer1 == null) return;
         OnStateChangedToPlayer1.Invoke();
     }
 
-    public void ChangeStateToPlayer2()
+    [ClientRpc]
+    public void ChangeStateToPlayer2ClientRpc()
     {
         Debug.Log("Changing state to player2...");
         currentState = GameState.player2;
+        if (OnStateChangedToPlayer2 == null) return;
         OnStateChangedToPlayer2.Invoke();
     }
 
-    public void ChangeStateToOpponent1()
+    [ClientRpc]
+    public void ChangeStateToOpponent1ClientRpc()
     {
         Debug.Log("Changing state to opponent1...");
         currentState = GameState.opponent1;
+        if (OnStateChangedToOpponent1 == null) return;
         OnStateChangedToOpponent1.Invoke();
     }
 
-    public void ChangeStateToOpponent2()
+    [ClientRpc]
+    public void ChangeStateToOpponent2ClientRpc()
     {
         Debug.Log("Changing state to opponent2...");
         currentState = GameState.opponent2;
+        if (OnStateChangedToOpponent2 == null) return;
         OnStateChangedToOpponent2.Invoke();
     }
 
-    public void ChangeStateToEnd()
+    [ClientRpc]
+    public void ChangeStateToEndClientRpc()
     {
         Debug.Log("Changing state to end...");
         currentState = GameState.end;
+        if (OnStateChangedToEnd == null) return;
         OnStateChangedToEnd.Invoke();
     }
 
-    public void ChangeStateToLoading()
+    [ClientRpc]
+    public void ChangeStateToLoadingClientRpc()
     {
         Debug.Log("Changing state to loading...");
         currentState = GameState.loading;
+        if (OnStateChangedToLoading == null) return;
         OnStateChangedToLoading.Invoke();
-    }
-
-    public void OnClientConnect()
-    {
-        Debug.Log("Client connected.");
-    }
-
-    public void OnClientDisconnect()
-    {
-        Debug.Log("Client disconnected.");
     }
 }

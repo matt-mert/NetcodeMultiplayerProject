@@ -22,42 +22,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "PrimaryContact",
-                    "type": "Button",
-                    "id": "81da7b9d-5dac-4f53-a159-1fa611c2298b",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "PrimaryPosition",
-                    "type": "Value",
-                    "id": "bc1b88c7-1364-4963-86de-7234bd957ae5",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "ContactBackup",
-                    "type": "Button",
-                    "id": "14828862-974b-45af-8ecc-875203da0750",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "PositionBackup",
-                    "type": "Button",
-                    "id": "6e4a9b34-897f-4b67-bdd1-983c7720f4ee",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -124,50 +88,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Toggle",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "65d6a047-510f-4730-b900-c28f681101ec",
-                    "path": "<Touchscreen>/primaryTouch/press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "PrimaryContact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "94b25060-98a3-42ce-857b-5292274d39a5",
-                    "path": "<Touchscreen>/primaryTouch/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "PrimaryPosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "7ce730db-4ea0-4f3a-aed0-effdfd99099f",
-                    "path": "<Mouse>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "PositionBackup",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "6138d230-5daa-4f7a-96d2-9297c0ad9791",
-                    "path": "<Mouse>/press",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ContactBackup",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
