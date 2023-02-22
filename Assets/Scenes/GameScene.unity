@@ -900,6 +900,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5c3079e0f3b85a4db1ad1e92f6521ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameDeck: {fileID: 11400000, guid: 1bff42f8ce9e81647ac54e3b46aab180, type: 2}
 --- !u!4 &525611211
 Transform:
   m_ObjectHideFlags: 0

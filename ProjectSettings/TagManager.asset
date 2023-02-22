@@ -3,16 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - HandCard
+  - FieldCard
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - PlayerCard
+  - TablePlane
   - Water
   - UI
-  - TablePlane
-  - MidSide
+  - HostCard
+  - ClientCard
   - FarSouth1
   - FarSouth2
   - FarSouth3
@@ -27,9 +29,9 @@ TagManager:
   - FarNorth3
   - NorthBase
   - SouthBase
-  - EnemyCard
-  - Shadows
-  - 
+  - MidSide
+  - HostHand
+  - ClientHand
   - 
   - 
   - 

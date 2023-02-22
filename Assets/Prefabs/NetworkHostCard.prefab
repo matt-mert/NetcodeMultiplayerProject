@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 3822896192661642548}
   - component: {fileID: 3822896192661642551}
   m_Layer: 3
-  m_Name: PlayerCard
+  m_Name: NetworkHostCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

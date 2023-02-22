@@ -38,8 +38,7 @@ public class GameStates : NetworkBehaviour
         loading,
     }
 
-    [HideInInspector]
-    public GameState currentState;
+    public NetworkVariable<GameState> currentState;
 
     private void Awake()
     {
@@ -52,8 +51,6 @@ public class GameStates : NetworkBehaviour
         {
             Destroy(gameObject);
         }
-
-        currentState = GameState.menu;
     }
 
     [ClientRpc]
@@ -61,9 +58,8 @@ public class GameStates : NetworkBehaviour
     {
         Debug.Log("Changing state to menu...");
         NetworkManager.Singleton.SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
-        currentState = GameState.menu;
-        if (OnStateChangedToMenu == null) return;
-        OnStateChangedToMenu.Invoke();
+        currentState.Value = GameState.menu;
+        if (OnStateChangedToMenu != null) OnStateChangedToMenu.Invoke();
     }
 
     [ClientRpc]
@@ -71,71 +67,64 @@ public class GameStates : NetworkBehaviour
     {
         Debug.Log("Changing state to initial...");
         NetworkManager.Singleton.SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
-        currentState = GameState.initial;
-        if (OnStateChangedToInitial == null) return;
-        OnStateChangedToInitial.Invoke();
+        currentState.Value = GameState.initial;
+        if (OnStateChangedToInitial != null) OnStateChangedToInitial.Invoke();
     }
 
     [ClientRpc]
     public void ChangeStateToStartClientRpc()
     {
         Debug.Log("Changing state to start...");
-        currentState = GameState.start;
-        if (OnStateChangedToStart == null) return;
-        OnStateChangedToStart.Invoke();
+        currentState.Value = GameState.start;
+        if (OnStateChangedToStart != null) OnStateChangedToStart.Invoke();
     }
 
     [ClientRpc]
     public void ChangeStateToHost1ClientRpc()
     {
         Debug.Log("Changing state to Host1...");
-        currentState = GameState.host1;
-        if (OnStateChangedToHost1 == null) return;
-        OnStateChangedToHost1.Invoke();
+        currentState.Value = GameState.host1;
+        if (OnStateChangedToHost1 != null) OnStateChangedToHost1.Invoke();
     }
 
     [ClientRpc]
     public void ChangeStateToHost2ClientRpc()
     {
         Debug.Log("Changing state to Host2...");
-        currentState = GameState.host2;
-        if (OnStateChangedToHost2 == null) return;
-        OnStateChangedToHost2.Invoke();
+        currentState.Value = GameState.host2;
+        if (OnStateChangedToHost2 != null) OnStateChangedToHost2.Invoke();
     }
 
     [ClientRpc]
     public void ChangeStateToClient1ClientRpc()
     {
         Debug.Log("Changing state to Client1...");
-        currentState = GameState.client1;
-        if (OnStateChangedToClient1 == null) return;
-        OnStateChangedToClient1.Invoke();
+        currentState.Value = GameState.client1;
+        if (OnStateChangedToClient1 != null) OnStateChangedToClient1.Invoke();
     }
 
     [ClientRpc]
     public void ChangeStateToClient2ClientRpc()
     {
         Debug.Log("Changing state to Client2...");
-        currentState = GameState.client2;
-        if (OnStateChangedToClient2 == null) return;
-        OnStateChangedToClient2.Invoke();
+        currentState.Value = GameState.client2;
+        if (OnStateChangedToClient2 != null) OnStateChangedToClient2.Invoke();
     }
 
     [ClientRpc]
     public void ChangeStateToEndClientRpc()
     {
         Debug.Log("Changing state to end...");
-        currentState = GameState.end;
-        if (OnStateChangedToEnd == null) return;
-        OnStateChangedToEnd.Invoke();
+        currentState.Value = GameState.end;
+        if (OnStateChangedToEnd != null) OnStateChangedToEnd.Invoke();
     }
 
     [ClientRpc]
     public void ChangeStateToLoadingClientRpc()
     {
         Debug.Log("Changing state to loading...");
-        currentState = GameState.loading;
-        if (OnStateChangedToLoading == null) return;
-        OnStateChangedToLoading.Invoke();
+        currentState.Value = GameState.loading;
+        if (OnStateChangedToLoading != null) OnStateChangedToLoading.Invoke();
+
     }
 }

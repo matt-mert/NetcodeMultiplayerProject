@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 444701593150942332}
   - component: {fileID: 444701593150942331}
   m_Layer: 22
-  m_Name: EnemyCard
+  m_Name: ClientCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

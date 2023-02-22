@@ -11,25 +11,35 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField]
     private float playerSpeed = 10.0f;
 
-    public delegate void PlayerMove(PlayerMoves move);
-    public event PlayerMove OnPlayerMove;
-
-    private PlayerInput playerInput;
-    private Camera playerCamera;
-    private Vector3 startPosition;
-    private Vector3 startScale;
-    private Finger activeFinger;
+    public delegate void HostMove();
+    public event HostMove OnHostMove;
+    public delegate void ClientMove();
+    public event ClientMove OnClientMove;
+    public delegate void HostDraw();
+    public event HostDraw OnHostDraw;
+    public delegate void ClientDraw();
+    public event ClientDraw OnClientDraw;
 
     [HideInInspector]
     public bool IsDragging;
 
+    private PlayerInput playerInput = null;
+    private Camera playerCamera = null;
+    private Transform draggingObject = null;
+    private Vector3 startPosition = Vector3.zero;
+    private Vector3 startScale = Vector3.zero;
+    private Finger activeFinger = null;
+    private bool moveIsValid;
+    private NetworkVariable<bool> networkMoveIsValid;
+
+    // Debug
     private InputAction moveAction;
     private InputAction toggleAction;
     private Vector2 inputVector;
 
-    public enum PlayerMoves
+    public enum Locations
     {
-        NoMove,
+        Default,
         FarSouth1,
         FarSouth2,
         FarSouth3,
@@ -44,18 +54,21 @@ public class PlayerNetwork : NetworkBehaviour
         FarNorth3,
         MidSide,
         SouthBase,
-        NorthBase
+        NorthBase,
+        HostHand,
+        ClientHand,
     }
-
-    private PlayerMoves currentMove = PlayerMoves.NoMove;
 
     public override void OnNetworkSpawn()
     {
         InitialConfigurations();
+        GameStates.Instance.currentState.Value = GameStates.GameState.menu;
         NetworkManager.Singleton.SceneManager.OnLoadComplete += OnSceneChanged;
         Touch.onFingerDown += FingerDown;
         Touch.onFingerUp += FingerUp;
 
+        // Debug
+        networkMoveIsValid.Value = true;
         toggleAction.started += ctx => TestCode();
     }
 
@@ -65,6 +78,7 @@ public class PlayerNetwork : NetworkBehaviour
         Touch.onFingerDown -= FingerDown;
         Touch.onFingerUp -= FingerUp;
 
+        // Debug
         toggleAction.started -= ctx => TestCode();
     }
 
@@ -74,6 +88,8 @@ public class PlayerNetwork : NetworkBehaviour
         EnhancedTouchSupport.Enable();
         playerCamera = Camera.main;
         playerInput = GetComponent<PlayerInput>();
+
+        // Debug
         moveAction = playerInput.actions["Move"];
         toggleAction = playerInput.actions["Toggle"];
     }
@@ -105,17 +121,17 @@ public class PlayerNetwork : NetworkBehaviour
         RaycastHit checkHit;
         if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("PlayerCard")))
         {
-            GameObject objectToDrag = checkHit.transform.gameObject;
-            startPosition = objectToDrag.transform.position;
-            startScale = objectToDrag.transform.localScale;
-            objectToDrag.transform.localScale = startScale * 2f;
-            objectToDrag.transform.position = checkHit.point;
+            draggingObject = checkHit.transform;
+            startPosition = draggingObject.position;
+            startScale = draggingObject.localScale;
+            draggingObject.localScale = startScale * 2f;
+            draggingObject.position = checkHit.point;
             IsDragging = true;
-            StartCoroutine(DragUpdate(objectToDrag));
+            StartCoroutine(DragUpdate(draggingObject));
         }
     }
 
-    private IEnumerator DragUpdate(GameObject draggingObject)
+    private IEnumerator DragUpdate(Transform obj)
     {
         while (activeFinger.isActive)
         {
@@ -123,113 +139,143 @@ public class PlayerNetwork : NetworkBehaviour
             RaycastHit checkHit;
             if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("TablePlane")))
             {
-                draggingObject.transform.position = checkHit.point;
+                obj.transform.position = checkHit.point;
                 yield return new WaitForFixedUpdate();
             }
             else break;
         }
-        draggingObject.transform.position = startPosition;
-        draggingObject.transform.localScale = startScale;
-        IsDragging = false;
-        StopCoroutine(DragUpdate(draggingObject));
+        StopCoroutine(DragUpdate(obj));
     }
 
     private void FingerUp(Finger finger)
     {
-        activeFinger = finger;
-        Ray touchRay = playerCamera.ScreenPointToRay(activeFinger.screenPosition);
+        if (!IsOwner) return;
+
+        if (!IsDragging) return;
+        if (IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.host2) return;
+        if (!IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.client2) return;
+        Ray touchRay = playerCamera.ScreenPointToRay(finger.screenPosition);
         RaycastHit checkHit;
         if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarSouth1")))
         {
-            currentMove = PlayerMoves.FarSouth1;
-            OnPlayerMove.Invoke(currentMove);
+            // Check if the move is hand move or field move - compare tag
+            // Check if the move is valid
+            // Check if current state is host2 or client2
+
+
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarSouth2")))
         {
-            currentMove = PlayerMoves.FarSouth2;
-            OnPlayerMove.Invoke(currentMove);
+            
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarSouth3")))
         {
-            currentMove = PlayerMoves.FarSouth3;
-            OnPlayerMove.Invoke(currentMove);
+            
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidSouth1")))
         {
-            currentMove = PlayerMoves.MidSouth1;
-            OnPlayerMove.Invoke(currentMove);
+            
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidSouth2")))
         {
-            currentMove = PlayerMoves.MidSouth2;
-            OnPlayerMove.Invoke(currentMove);
+            
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidSouth3")))
         {
-            currentMove = PlayerMoves.MidSouth3;
-            OnPlayerMove.Invoke(currentMove);
+            
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidNorth1")))
         {
-            currentMove = PlayerMoves.MidNorth1;
-            OnPlayerMove.Invoke(currentMove);
+            
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidNorth2")))
         {
-            currentMove = PlayerMoves.MidNorth2;
-            OnPlayerMove.Invoke(currentMove);
+            
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidNorth3")))
         {
-            currentMove = PlayerMoves.MidNorth3;
-            OnPlayerMove.Invoke(currentMove);
+            
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarNorth1")))
         {
-            currentMove = PlayerMoves.FarNorth1;
-            OnPlayerMove.Invoke(currentMove);
+            
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarNorth2")))
         {
-            currentMove = PlayerMoves.FarNorth1;
-            OnPlayerMove.Invoke(currentMove);
+            
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarNorth3")))
         {
-            currentMove = PlayerMoves.FarNorth3;
-            OnPlayerMove.Invoke(currentMove);
+            
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("SouthBase")))
         {
-            currentMove = PlayerMoves.SouthBase;
-            OnPlayerMove.Invoke(currentMove);
+            
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("NorthBase")))
         {
-            currentMove = PlayerMoves.NorthBase;
-            OnPlayerMove.Invoke(currentMove);
+            
         }
         else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidSide")))
         {
-            currentMove = PlayerMoves.MidSide;
-            OnPlayerMove.Invoke(currentMove);
+            
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("HostHand")))
+        {
+            
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("ClientHand")))
+        {
+
         }
         else
         {
-            currentMove = PlayerMoves.NoMove;
+            draggingObject.position = startPosition;
+            draggingObject.localScale = startScale;
         }
+
+        draggingObject = null;
+        IsDragging = false;
+    }
+
+    private void CheckHostMoveValidity(Locations to, Locations from, int cardId)
+    {
+        moveIsValid = true;
+    }
+
+    private void CheckClientMoveValidity(Locations to, Locations from, int cardId)
+    {
+        moveIsValid = true;
     }
 
     [ServerRpc]
-    private void HostMoveCardRequestServerRpc()
+    private void CheckHostMoveValidityServerRpc(Locations to, Locations from, int cardId)
     {
-
+        networkMoveIsValid.Value = true;
     }
 
     [ServerRpc]
-    private void ClientMoveCardRequestServerRpc()
+    private void CheckClientMoveValidityServerRpc(Locations to, Locations from, int cardId)
     {
+        networkMoveIsValid.Value = true;
+    }
 
+    [ServerRpc]
+    private void HostMoveServerRpc(Locations to, Locations from, int cardId)
+    {
+        // Do same checks here again
+
+        Debug.Log("Detected " + to + " from the host.");
+        if (OnHostMove != null) OnHostMove.Invoke();
+    }
+
+    [ServerRpc]
+    private void ClientMoveServerRpc(Locations to, Locations from, int cardId)
+    {
+        // Do same checks here again
+        
+        Debug.Log("Detected " + to + " from the client.");
+        if (OnClientMove != null) OnClientMove.Invoke();
     }
 
     private void OnSceneChanged(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
@@ -241,31 +287,31 @@ public class PlayerNetwork : NetworkBehaviour
 
     private void TestCode()
     {
-        if (GameStates.Instance.currentState == GameStates.GameState.menu)
+        if (GameStates.Instance.currentState.Value == GameStates.GameState.menu)
         {
             GameStates.Instance.ChangeStateToInitialClientRpc();
         }
-        else if (GameStates.Instance.currentState == GameStates.GameState.initial)
+        else if (GameStates.Instance.currentState.Value == GameStates.GameState.initial)
         {
             GameStates.Instance.ChangeStateToStartClientRpc();
         }
-        else if (GameStates.Instance.currentState == GameStates.GameState.start)
+        else if (GameStates.Instance.currentState.Value == GameStates.GameState.start)
         {
             GameStates.Instance.ChangeStateToHost1ClientRpc();
         }
-        else if (GameStates.Instance.currentState == GameStates.GameState.host1)
+        else if (GameStates.Instance.currentState.Value == GameStates.GameState.host1)
         {
             GameStates.Instance.ChangeStateToHost2ClientRpc();
         }
-        else if (GameStates.Instance.currentState == GameStates.GameState.host2)
+        else if (GameStates.Instance.currentState.Value == GameStates.GameState.host2)
         {
             GameStates.Instance.ChangeStateToClient1ClientRpc();
         }
-        else if (GameStates.Instance.currentState == GameStates.GameState.client1)
+        else if (GameStates.Instance.currentState.Value == GameStates.GameState.client1)
         {
             GameStates.Instance.ChangeStateToClient2ClientRpc();
         }
-        else if (GameStates.Instance.currentState == GameStates.GameState.client2)
+        else if (GameStates.Instance.currentState.Value == GameStates.GameState.client2)
         {
             GameStates.Instance.ChangeStateToHost1ClientRpc();
         }
