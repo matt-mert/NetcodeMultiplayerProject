@@ -12,14 +12,14 @@ public class GameStates : NetworkBehaviour
     public event StateChangedToInitial OnStateChangedToInitial;
     public delegate void StateChangedToStart();
     public event StateChangedToStart OnStateChangedToStart;
-    public delegate void StateChangedToPlayer1();
-    public event StateChangedToPlayer1 OnStateChangedToPlayer1;
-    public delegate void StateChangedToPlayer2();
-    public event StateChangedToPlayer2 OnStateChangedToPlayer2;
-    public delegate void StateChangedToOpponent1();
-    public event StateChangedToOpponent1 OnStateChangedToOpponent1;
-    public delegate void StateChangedToOpponent2();
-    public event StateChangedToOpponent2 OnStateChangedToOpponent2;
+    public delegate void StateChangedToHost1();
+    public event StateChangedToHost1 OnStateChangedToHost1;
+    public delegate void StateChangedToHost2();
+    public event StateChangedToHost2 OnStateChangedToHost2;
+    public delegate void StateChangedToClient1();
+    public event StateChangedToClient1 OnStateChangedToClient1;
+    public delegate void StateChangedToClient2();
+    public event StateChangedToClient2 OnStateChangedToClient2;
     public delegate void StateChangedToEnd();
     public event StateChangedToEnd OnStateChangedToEnd;
     public delegate void StateChangedToLoading();
@@ -30,10 +30,10 @@ public class GameStates : NetworkBehaviour
         menu,
         initial,
         start,
-        player1,
-        player2,
-        opponent1,
-        opponent2,
+        host1,
+        host2,
+        client1,
+        client2,
         end,
         loading,
     }
@@ -86,39 +86,39 @@ public class GameStates : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void ChangeStateToPlayer1ClientRpc()
+    public void ChangeStateToHost1ClientRpc()
     {
-        Debug.Log("Changing state to player1...");
-        currentState = GameState.player1;
-        if (OnStateChangedToPlayer1 == null) return;
-        OnStateChangedToPlayer1.Invoke();
+        Debug.Log("Changing state to Host1...");
+        currentState = GameState.host1;
+        if (OnStateChangedToHost1 == null) return;
+        OnStateChangedToHost1.Invoke();
     }
 
     [ClientRpc]
-    public void ChangeStateToPlayer2ClientRpc()
+    public void ChangeStateToHost2ClientRpc()
     {
-        Debug.Log("Changing state to player2...");
-        currentState = GameState.player2;
-        if (OnStateChangedToPlayer2 == null) return;
-        OnStateChangedToPlayer2.Invoke();
+        Debug.Log("Changing state to Host2...");
+        currentState = GameState.host2;
+        if (OnStateChangedToHost2 == null) return;
+        OnStateChangedToHost2.Invoke();
     }
 
     [ClientRpc]
-    public void ChangeStateToOpponent1ClientRpc()
+    public void ChangeStateToClient1ClientRpc()
     {
-        Debug.Log("Changing state to opponent1...");
-        currentState = GameState.opponent1;
-        if (OnStateChangedToOpponent1 == null) return;
-        OnStateChangedToOpponent1.Invoke();
+        Debug.Log("Changing state to Client1...");
+        currentState = GameState.client1;
+        if (OnStateChangedToClient1 == null) return;
+        OnStateChangedToClient1.Invoke();
     }
 
     [ClientRpc]
-    public void ChangeStateToOpponent2ClientRpc()
+    public void ChangeStateToClient2ClientRpc()
     {
-        Debug.Log("Changing state to opponent2...");
-        currentState = GameState.opponent2;
-        if (OnStateChangedToOpponent2 == null) return;
-        OnStateChangedToOpponent2.Invoke();
+        Debug.Log("Changing state to Client2...");
+        currentState = GameState.client2;
+        if (OnStateChangedToClient2 == null) return;
+        OnStateChangedToClient2.Invoke();
     }
 
     [ClientRpc]

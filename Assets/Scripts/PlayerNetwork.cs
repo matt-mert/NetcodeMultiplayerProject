@@ -11,8 +11,10 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField]
     private float playerSpeed = 10.0f;
 
-    private PlayerInput playerInput;
+    public delegate void PlayerMove(PlayerMoves move);
+    public event PlayerMove OnPlayerMove;
 
+    private PlayerInput playerInput;
     private Camera playerCamera;
     private Vector3 startPosition;
     private Vector3 startScale;
@@ -25,11 +27,34 @@ public class PlayerNetwork : NetworkBehaviour
     private InputAction toggleAction;
     private Vector2 inputVector;
 
+    public enum PlayerMoves
+    {
+        NoMove,
+        FarSouth1,
+        FarSouth2,
+        FarSouth3,
+        MidSouth1,
+        MidSouth2,
+        MidSouth3,
+        MidNorth1,
+        MidNorth2,
+        MidNorth3,
+        FarNorth1,
+        FarNorth2,
+        FarNorth3,
+        MidSide,
+        SouthBase,
+        NorthBase
+    }
+
+    private PlayerMoves currentMove = PlayerMoves.NoMove;
+
     public override void OnNetworkSpawn()
     {
         InitialConfigurations();
         NetworkManager.Singleton.SceneManager.OnLoadComplete += OnSceneChanged;
         Touch.onFingerDown += FingerDown;
+        Touch.onFingerUp += FingerUp;
 
         toggleAction.started += ctx => TestCode();
     }
@@ -38,6 +63,7 @@ public class PlayerNetwork : NetworkBehaviour
     {
         NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnSceneChanged;
         Touch.onFingerDown -= FingerDown;
+        Touch.onFingerUp -= FingerUp;
 
         toggleAction.started -= ctx => TestCode();
     }
@@ -108,6 +134,104 @@ public class PlayerNetwork : NetworkBehaviour
         StopCoroutine(DragUpdate(draggingObject));
     }
 
+    private void FingerUp(Finger finger)
+    {
+        activeFinger = finger;
+        Ray touchRay = playerCamera.ScreenPointToRay(activeFinger.screenPosition);
+        RaycastHit checkHit;
+        if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarSouth1")))
+        {
+            currentMove = PlayerMoves.FarSouth1;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarSouth2")))
+        {
+            currentMove = PlayerMoves.FarSouth2;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarSouth3")))
+        {
+            currentMove = PlayerMoves.FarSouth3;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidSouth1")))
+        {
+            currentMove = PlayerMoves.MidSouth1;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidSouth2")))
+        {
+            currentMove = PlayerMoves.MidSouth2;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidSouth3")))
+        {
+            currentMove = PlayerMoves.MidSouth3;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidNorth1")))
+        {
+            currentMove = PlayerMoves.MidNorth1;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidNorth2")))
+        {
+            currentMove = PlayerMoves.MidNorth2;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidNorth3")))
+        {
+            currentMove = PlayerMoves.MidNorth3;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarNorth1")))
+        {
+            currentMove = PlayerMoves.FarNorth1;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarNorth2")))
+        {
+            currentMove = PlayerMoves.FarNorth1;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarNorth3")))
+        {
+            currentMove = PlayerMoves.FarNorth3;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("SouthBase")))
+        {
+            currentMove = PlayerMoves.SouthBase;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("NorthBase")))
+        {
+            currentMove = PlayerMoves.NorthBase;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidSide")))
+        {
+            currentMove = PlayerMoves.MidSide;
+            OnPlayerMove.Invoke(currentMove);
+        }
+        else
+        {
+            currentMove = PlayerMoves.NoMove;
+        }
+    }
+
+    [ServerRpc]
+    private void HostMoveCardRequestServerRpc()
+    {
+
+    }
+
+    [ServerRpc]
+    private void ClientMoveCardRequestServerRpc()
+    {
+
+    }
+
     private void OnSceneChanged(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
     {
         if (!IsOwner) return;
@@ -120,13 +244,30 @@ public class PlayerNetwork : NetworkBehaviour
         if (GameStates.Instance.currentState == GameStates.GameState.menu)
         {
             GameStates.Instance.ChangeStateToInitialClientRpc();
-            return;
         }
-
-        else
+        else if (GameStates.Instance.currentState == GameStates.GameState.initial)
         {
             GameStates.Instance.ChangeStateToStartClientRpc();
-            return;
+        }
+        else if (GameStates.Instance.currentState == GameStates.GameState.start)
+        {
+            GameStates.Instance.ChangeStateToHost1ClientRpc();
+        }
+        else if (GameStates.Instance.currentState == GameStates.GameState.host1)
+        {
+            GameStates.Instance.ChangeStateToHost2ClientRpc();
+        }
+        else if (GameStates.Instance.currentState == GameStates.GameState.host2)
+        {
+            GameStates.Instance.ChangeStateToClient1ClientRpc();
+        }
+        else if (GameStates.Instance.currentState == GameStates.GameState.client1)
+        {
+            GameStates.Instance.ChangeStateToClient2ClientRpc();
+        }
+        else if (GameStates.Instance.currentState == GameStates.GameState.client2)
+        {
+            GameStates.Instance.ChangeStateToHost1ClientRpc();
         }
     }
 }
