@@ -164,6 +164,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerSpeed: 10
   IsDragging: 0
+  testPrefab: {fileID: 3822896192661642547, guid: 34f5b39e8a60d9e4791f25ec966818e5,
+    type: 3}
 --- !u!114 &1683390005558037466
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,7 +1,8 @@
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
-public class CardHandler : MonoBehaviour
+public class NetworkCardHandler : NetworkBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI cardNameText;
@@ -15,8 +16,6 @@ public class CardHandler : MonoBehaviour
     private TextMeshProUGUI spawnEnergyText;
     [SerializeField]
     private TextMeshProUGUI moveEnergyText;
-    [SerializeField]
-    private MeshRenderer meshRenderer;
 
     public GameCard cardSO;
 
@@ -39,12 +38,10 @@ public class CardHandler : MonoBehaviour
     [HideInInspector]
     public GameCard.Properties property;
 
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
         cardId = cardSO.cardId;
-
         cardMaterial = cardSO.cardMaterial;
-        meshRenderer.material = cardMaterial;
 
         cardName = cardSO.cardName;
         cardNameText.text = cardName;
@@ -54,53 +51,60 @@ public class CardHandler : MonoBehaviour
 
         attack = cardSO.cardPower;
         attackText.text = attack.ToString();
-
+        
         health = cardSO.cardHealth;
         healthText.text = health.ToString();
-
+        
         spawnEnergy = cardSO.spawnEnergy;
         spawnEnergyText.text = spawnEnergy.ToString();
-
+        
         moveEnergy = cardSO.moveEnergy;
         moveEnergyText.text = moveEnergy.ToString();
     }
 
+    [ClientRpc]
     public void TakeDamageClientRpc(int amount)
     {
         health -= amount;
         healthText.text = health.ToString();
     }
 
+    [ClientRpc]
     public void GetHealedClientRpc(int amount)
     {
         health += amount;
         healthText.text = health.ToString();
     }
 
+    [ClientRpc]
     public void IncreaseAttackClientRpc(int amount)
     {
         attack += amount;
         attackText.text = attack.ToString();
     }
 
+    [ClientRpc]
     public void DecreaseAttackClientRpc(int amount)
     {
         attack -= amount;
         attackText.text = attack.ToString();
     }
 
+    [ClientRpc]
     public void IncreaseMoveEnergyClientRpc(int amount)
     {
         moveEnergy += amount;
         moveEnergyText.text = moveEnergy.ToString();
     }
 
+    [ClientRpc]
     public void DecreaseMoveEnergyClientRpc(int amount)
     {
         moveEnergy -= amount;
         moveEnergyText.text = moveEnergy.ToString();
     }
 
+    [ClientRpc]
     public void SpawnFromHandClientRpc()
     {
 

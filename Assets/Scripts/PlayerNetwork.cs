@@ -30,33 +30,23 @@ public class PlayerNetwork : NetworkBehaviour
     private Vector3 startScale = Vector3.zero;
     private Finger activeFinger = null;
     private bool moveIsValid;
-    private NetworkVariable<bool> networkMoveIsValid;
+
+    private CardManager.CardLocation fromLocation;
+    private CardManager.CardLocation toLocation;
 
     // Debug
+
+    [SerializeField]
+    private GameObject testPrefab;
+
     private InputAction moveAction;
     private InputAction toggleAction;
+    private InputAction testAction;
     private Vector2 inputVector;
 
-    public enum Locations
+    private void Awake()
     {
-        Default,
-        FarSouth1,
-        FarSouth2,
-        FarSouth3,
-        MidSouth1,
-        MidSouth2,
-        MidSouth3,
-        MidNorth1,
-        MidNorth2,
-        MidNorth3,
-        FarNorth1,
-        FarNorth2,
-        FarNorth3,
-        MidSide,
-        SouthBase,
-        NorthBase,
-        HostHand,
-        ClientHand,
+        InitialConfigurations();
     }
 
     public override void OnNetworkSpawn()
@@ -68,8 +58,8 @@ public class PlayerNetwork : NetworkBehaviour
         Touch.onFingerUp += FingerUp;
 
         // Debug
-        networkMoveIsValid.Value = true;
-        toggleAction.started += ctx => TestCode();
+        toggleAction.started += ctx => ToggleCode();
+        testAction.started += ctx => TestCode();
     }
 
     public override void OnNetworkDespawn()
@@ -79,7 +69,8 @@ public class PlayerNetwork : NetworkBehaviour
         Touch.onFingerUp -= FingerUp;
 
         // Debug
-        toggleAction.started -= ctx => TestCode();
+        toggleAction.started -= ctx => ToggleCode();
+        testAction.started -= ctx => TestCode();
     }
 
     private void InitialConfigurations()
@@ -92,11 +83,19 @@ public class PlayerNetwork : NetworkBehaviour
         // Debug
         moveAction = playerInput.actions["Move"];
         toggleAction = playerInput.actions["Toggle"];
+        testAction = playerInput.actions["Test"];
     }
 
     private void OnConnectedToServer()
     {
         if (!IsOwner) return;
+    }
+
+    private void OnSceneChanged(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
+    {
+        if (!IsOwner) return;
+
+        InitialConfigurations();
     }
 
     private void Update()
@@ -129,6 +128,26 @@ public class PlayerNetwork : NetworkBehaviour
             IsDragging = true;
             StartCoroutine(DragUpdate(draggingObject));
         }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("NetworkHostCard")) && IsHost)
+        {
+            draggingObject = checkHit.transform;
+            startPosition = draggingObject.position;
+            startScale = draggingObject.localScale;
+            draggingObject.localScale = startScale * 2f;
+            draggingObject.position = checkHit.point;
+            IsDragging = true;
+            StartCoroutine(DragUpdate(draggingObject));
+        }
+        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("NetworkClientCard")) && !IsHost)
+        {
+            draggingObject = checkHit.transform;
+            startPosition = draggingObject.position;
+            startScale = draggingObject.localScale;
+            draggingObject.localScale = startScale * 2f;
+            draggingObject.position = checkHit.point;
+            IsDragging = true;
+            StartCoroutine(DragUpdate(draggingObject));
+        }
     }
 
     private IEnumerator DragUpdate(Transform obj)
@@ -152,140 +171,89 @@ public class PlayerNetwork : NetworkBehaviour
         if (!IsOwner) return;
 
         if (!IsDragging) return;
-        if (IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.host2) return;
-        if (!IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.client2) return;
-        Ray touchRay = playerCamera.ScreenPointToRay(finger.screenPosition);
-        RaycastHit checkHit;
-        if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarSouth1")))
-        {
-            // Check if the move is hand move or field move - compare tag
-            // Check if the move is valid
-            // Check if current state is host2 or client2
-
-
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarSouth2")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarSouth3")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidSouth1")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidSouth2")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidSouth3")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidNorth1")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidNorth2")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidNorth3")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarNorth1")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarNorth2")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FarNorth3")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("SouthBase")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("NorthBase")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("MidSide")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("HostHand")))
-        {
-            
-        }
-        else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("ClientHand")))
-        {
-
-        }
-        else
+        if (IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.host2)
         {
             draggingObject.position = startPosition;
             draggingObject.localScale = startScale;
+            draggingObject = null;
+            IsDragging = false;
+        }
+        if (!IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.client2)
+        {
+            draggingObject.position = startPosition;
+            draggingObject.localScale = startScale;
+            draggingObject = null;
+            IsDragging = false;
+        }
+
+        Ray touchRay = playerCamera.ScreenPointToRay(finger.screenPosition);
+        RaycastHit checkHit;
+        if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("FieldCard")))
+        {
+            if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("NetworkHostCard")))
+            {
+                // Check if the move is hand move or field move - compare tag
+                // Check if the move is valid
+                // Check if current state is host2 or client2
+            }
+            else if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("NetworkClientCard")))
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+        else
+        {
+
         }
 
         draggingObject = null;
         IsDragging = false;
     }
 
-    private void CheckHostMoveValidity(Locations to, Locations from, int cardId)
+    private void CheckHostMoveValidity()
     {
         moveIsValid = true;
     }
 
-    private void CheckClientMoveValidity(Locations to, Locations from, int cardId)
+    private void CheckClientMoveValidity()
     {
         moveIsValid = true;
     }
 
     [ServerRpc]
-    private void CheckHostMoveValidityServerRpc(Locations to, Locations from, int cardId)
+    private void CheckHostMoveValidityServerRpc()
     {
-        networkMoveIsValid.Value = true;
+
     }
 
     [ServerRpc]
-    private void CheckClientMoveValidityServerRpc(Locations to, Locations from, int cardId)
+    private void CheckClientMoveValidityServerRpc()
     {
-        networkMoveIsValid.Value = true;
+
     }
 
-    [ServerRpc]
-    private void HostMoveServerRpc(Locations to, Locations from, int cardId)
+    [ClientRpc]
+    private void HostMoveClientRpc()
     {
         // Do same checks here again
 
-        Debug.Log("Detected " + to + " from the host.");
         if (OnHostMove != null) OnHostMove.Invoke();
     }
 
-    [ServerRpc]
-    private void ClientMoveServerRpc(Locations to, Locations from, int cardId)
+    [ClientRpc]
+    private void ClientMoveClientRpc()
     {
         // Do same checks here again
         
-        Debug.Log("Detected " + to + " from the client.");
         if (OnClientMove != null) OnClientMove.Invoke();
     }
 
-    private void OnSceneChanged(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
-    {
-        if (!IsOwner) return;
-
-        InitialConfigurations();
-    }
-
-    private void TestCode()
+    // Debug
+    private void ToggleCode()
     {
         if (GameStates.Instance.currentState.Value == GameStates.GameState.menu)
         {
@@ -315,5 +283,16 @@ public class PlayerNetwork : NetworkBehaviour
         {
             GameStates.Instance.ChangeStateToHost1ClientRpc();
         }
+    }
+
+    private void TestCode()
+    {
+        GameObject test = Instantiate(testPrefab, new Vector3(0, 40, 0), Quaternion.Euler(new Vector3(-90, 90, 0)));
+        ulong clientId = NetworkManager.Singleton.ConnectedClients[0].ClientId;
+        test.GetComponent<NetworkObject>().CheckObjectVisibility = (clientId) =>
+        {
+            return true;
+        };
+        test.GetComponent<NetworkObject>().Spawn();
     }
 }

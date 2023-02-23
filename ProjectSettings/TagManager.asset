@@ -13,25 +13,25 @@ TagManager:
   - TablePlane
   - Water
   - UI
-  - HostCard
-  - ClientCard
-  - FarSouth1
-  - FarSouth2
-  - FarSouth3
-  - MidSouth1
-  - MidSouth2
-  - MidSouth3
-  - MidNorth1
-  - MidNorth2
-  - MidNorth3
-  - FarNorth1
-  - FarNorth2
-  - FarNorth3
-  - NorthBase
-  - SouthBase
-  - MidSide
-  - HostHand
-  - ClientHand
+  - NetworkHostCard
+  - NetworkClientCard
+  - FieldCard
+  - PlayerCard
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
