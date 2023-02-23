@@ -191,6 +191,7 @@ public class PlayerNetwork : NetworkBehaviour
             draggingObject.localScale = startScale;
             draggingObject = null;
             IsDragging = false;
+            return;
         }
         if (!IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.client2)
         {
@@ -201,6 +202,7 @@ public class PlayerNetwork : NetworkBehaviour
             draggingObject.localScale = startScale;
             draggingObject = null;
             IsDragging = false;
+            return;
         }
 
         Ray touchRay = playerCamera.ScreenPointToRay(finger.screenPosition);
