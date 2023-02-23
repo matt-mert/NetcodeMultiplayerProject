@@ -270,16 +270,8 @@ MonoBehaviour:
   healthText: {fileID: 3822896192727596476}
   spawnEnergyText: {fileID: 3822896193324029132}
   moveEnergyText: {fileID: 3822896193389291686}
+  meshRenderer: {fileID: 3822896192661642548}
   cardSO: {fileID: 11400000, guid: dbba26a7b5c934849b317394feadc5ef, type: 2}
-  cardId: 0
-  cardMaterial: {fileID: 0}
-  cardName: 
-  cardDesc: 
-  attack: 0
-  health: 0
-  spawnEnergy: 0
-  moveEnergy: 0
-  property: 0
 --- !u!1 &3822896192727596474
 GameObject:
   m_ObjectHideFlags: 0

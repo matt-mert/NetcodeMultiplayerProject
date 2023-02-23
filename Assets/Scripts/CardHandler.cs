@@ -64,45 +64,4 @@ public class CardHandler : MonoBehaviour
         moveEnergy = cardSO.moveEnergy;
         moveEnergyText.text = moveEnergy.ToString();
     }
-
-    public void TakeDamageClientRpc(int amount)
-    {
-        health -= amount;
-        healthText.text = health.ToString();
-    }
-
-    public void GetHealedClientRpc(int amount)
-    {
-        health += amount;
-        healthText.text = health.ToString();
-    }
-
-    public void IncreaseAttackClientRpc(int amount)
-    {
-        attack += amount;
-        attackText.text = attack.ToString();
-    }
-
-    public void DecreaseAttackClientRpc(int amount)
-    {
-        attack -= amount;
-        attackText.text = attack.ToString();
-    }
-
-    public void IncreaseMoveEnergyClientRpc(int amount)
-    {
-        moveEnergy += amount;
-        moveEnergyText.text = moveEnergy.ToString();
-    }
-
-    public void DecreaseMoveEnergyClientRpc(int amount)
-    {
-        moveEnergy -= amount;
-        moveEnergyText.text = moveEnergy.ToString();
-    }
-
-    public void SpawnFromHandClientRpc()
-    {
-
-    }
 }

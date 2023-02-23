@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -16,97 +17,68 @@ public class NetworkCardHandler : NetworkBehaviour
     private TextMeshProUGUI spawnEnergyText;
     [SerializeField]
     private TextMeshProUGUI moveEnergyText;
+    [SerializeField]
+    private MeshRenderer meshRenderer;
 
-    public GameCard cardSO;
+    [SerializeField]
+    private GameCard cardSO;
 
-    [HideInInspector]
-    public int cardId;
-    [HideInInspector]
-    public Material cardMaterial;
-    [HideInInspector]
-    public string cardName;
-    [HideInInspector]
-    public string cardDesc;
-    [HideInInspector]
-    public int attack;
-    [HideInInspector]
-    public int health;
-    [HideInInspector]
-    public int spawnEnergy;
-    [HideInInspector]
-    public int moveEnergy;
-    [HideInInspector]
-    public GameCard.Properties property;
+    private GenericUnitCard genericUnitCard;
 
     public override void OnNetworkSpawn()
     {
-        cardId = cardSO.cardId;
-        cardMaterial = cardSO.cardMaterial;
+        cardNameText.text = cardSO.cardName;
+        cardDescText.text = cardSO.cardDesc;
+        attackText.text = cardSO.cardPower.ToString();
+        healthText.text = cardSO.cardHealth.ToString();
+        spawnEnergyText.text = cardSO.spawnEnergy.ToString();
+        moveEnergyText.text = cardSO.moveEnergy.ToString();
+        meshRenderer.material = cardSO.cardMaterial;
 
-        cardName = cardSO.cardName;
-        cardNameText.text = cardName;
+        genericUnitCard = GetComponent<GenericUnitCard>();
+        genericUnitCard.OnIncreaseAttack += UpdateAttackUIClientRpc;
+        genericUnitCard.OnDecreaseAttack += UpdateAttackUIClientRpc;
+        genericUnitCard.OnTakeDamage += UpdateHealthUIClientRpc;
+        genericUnitCard.OnGetHealed += UpdateHealthUIClientRpc;
+        genericUnitCard.OnIncreaseMoveEnergy += UpdateMoveEnergyUIClientRpc;
+        genericUnitCard.OnDecreaseMoveEnergy += UpdateMoveEnergyUIClientRpc;
+        genericUnitCard.OnIncreaseSpawnEnergy += UpdateSpawnEnergyUIClientRpc;
+        genericUnitCard.OnDecreaseSpawnEnergy += UpdateSpawnEnergyUIClientRpc;
+    }
 
-        cardDesc = cardSO.cardDesc;
-        cardDescText.text = cardDesc;
-
-        attack = cardSO.cardPower;
-        attackText.text = attack.ToString();
-        
-        health = cardSO.cardHealth;
-        healthText.text = health.ToString();
-        
-        spawnEnergy = cardSO.spawnEnergy;
-        spawnEnergyText.text = spawnEnergy.ToString();
-        
-        moveEnergy = cardSO.moveEnergy;
-        moveEnergyText.text = moveEnergy.ToString();
+    public override void OnNetworkDespawn()
+    {
+        genericUnitCard.OnIncreaseAttack -= UpdateAttackUIClientRpc;
+        genericUnitCard.OnDecreaseAttack -= UpdateAttackUIClientRpc;
+        genericUnitCard.OnTakeDamage -= UpdateHealthUIClientRpc;
+        genericUnitCard.OnGetHealed -= UpdateHealthUIClientRpc;
+        genericUnitCard.OnIncreaseMoveEnergy -= UpdateMoveEnergyUIClientRpc;
+        genericUnitCard.OnDecreaseMoveEnergy -= UpdateMoveEnergyUIClientRpc;
+        genericUnitCard.OnIncreaseSpawnEnergy -= UpdateSpawnEnergyUIClientRpc;
+        genericUnitCard.OnDecreaseSpawnEnergy -= UpdateSpawnEnergyUIClientRpc;
     }
 
     [ClientRpc]
-    public void TakeDamageClientRpc(int amount)
+    public void UpdateAttackUIClientRpc(int prev, int next)
     {
-        health -= amount;
-        healthText.text = health.ToString();
+        attackText.text = next.ToString();
     }
 
     [ClientRpc]
-    public void GetHealedClientRpc(int amount)
+    public void UpdateHealthUIClientRpc(int prev, int next)
     {
-        health += amount;
-        healthText.text = health.ToString();
+        healthText.text = next.ToString();
     }
 
     [ClientRpc]
-    public void IncreaseAttackClientRpc(int amount)
+    public void UpdateSpawnEnergyUIClientRpc(int prev, int next)
     {
-        attack += amount;
-        attackText.text = attack.ToString();
+        spawnEnergyText.text = next.ToString();
     }
 
     [ClientRpc]
-    public void DecreaseAttackClientRpc(int amount)
+    public void UpdateMoveEnergyUIClientRpc(int prev, int next)
     {
-        attack -= amount;
-        attackText.text = attack.ToString();
-    }
-
-    [ClientRpc]
-    public void IncreaseMoveEnergyClientRpc(int amount)
-    {
-        moveEnergy += amount;
-        moveEnergyText.text = moveEnergy.ToString();
-    }
-
-    [ClientRpc]
-    public void DecreaseMoveEnergyClientRpc(int amount)
-    {
-        moveEnergy -= amount;
-        moveEnergyText.text = moveEnergy.ToString();
-    }
-
-    [ClientRpc]
-    public void SpawnFromHandClientRpc()
-    {
-
+        moveEnergyText.text = next.ToString();
     }
 }

@@ -1,9 +1,15 @@
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
 public class CardManager : NetworkBehaviour
 {
     public static CardManager Instance { get; private set; }
+
+    public delegate void HostDrawCard();
+    public event HostDrawCard OnHostDrawCard;
+    public delegate void ClientDrawCard();
+    public event ClientDrawCard OnClientDrawCard;
 
     [SerializeField]
     private GameDeck gameDeck;
@@ -26,8 +32,11 @@ public class CardManager : NetworkBehaviour
         MidSide,
         SouthBase,
         NorthBase,
-        Hand
+        HostHand,
+        ClientHand
     }
+
+    public Dictionary<CardLocation, int> fieldDictionary;
 
     private void Awake()
     {
@@ -42,13 +51,15 @@ public class CardManager : NetworkBehaviour
         }
     }
 
-    private void InitializeGame()
+    [ClientRpc]
+    public void HostDrawCardClientRpc()
     {
-
+        if (OnHostDrawCard != null) OnHostDrawCard.Invoke();
     }
 
-    public void PlayCardAtPosition()
+    [ClientRpc]
+    public void ClientDrawCardClientRpc()
     {
-
+        if (OnClientDrawCard != null) OnClientDrawCard.Invoke();
     }
 }
