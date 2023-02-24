@@ -22,9 +22,13 @@ public abstract class GenericUnitCard : NetworkBehaviour
 
     public GameCard cardSO;
 
+    [HideInInspector]
     public int attack;
+    [HideInInspector]
     public int health;
+    [HideInInspector]
     public int spawnEnergy;
+    [HideInInspector]
     public int moveEnergy;
 
     public override void OnNetworkSpawn()

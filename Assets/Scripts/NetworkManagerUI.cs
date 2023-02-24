@@ -25,16 +25,8 @@ public class NetworkManagerUI : MonoBehaviour
             string str = inputField.text;
             ConnectionManager.Instance.JoinRelay(str);
         });
-    }
 
-    private void OnEnable()
-    {
         NetworkManager.Singleton.OnServerStarted += ApplyCodeToText;
-    }
-
-    private void OnDisable()
-    {
-        NetworkManager.Singleton.OnServerStarted -= ApplyCodeToText;
     }
 
     private void ApplyCodeToText()

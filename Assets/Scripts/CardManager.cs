@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -11,8 +10,23 @@ public class CardManager : NetworkBehaviour
     public delegate void ClientDrawCard();
     public event ClientDrawCard OnClientDrawCard;
 
+    public NetworkList<int> HostCardsList;
+
     [SerializeField]
     private GameDeck gameDeck;
+
+    // Debug
+
+    [SerializeField]
+    private GameObject exampleCard;
+    [SerializeField]
+    private GameObject exampleGenericCard;
+    [SerializeField]
+    private GameObject exampleNetworkCard;
+    [SerializeField]
+    private GameCard gameCardSO;
+    [SerializeField]
+    private GameCard genericCardSO;
 
     public enum CardLocation
     {
@@ -36,8 +50,6 @@ public class CardManager : NetworkBehaviour
         ClientHand
     }
 
-    public Dictionary<CardLocation, int> fieldDictionary;
-
     private void Awake()
     {
         if (Instance == null)
@@ -49,17 +61,60 @@ public class CardManager : NetworkBehaviour
         {
             Destroy(gameObject);
         }
+
+        HostCardsList = new NetworkList<int>();
     }
 
     [ClientRpc]
     public void HostDrawCardClientRpc()
     {
+        Vector3 position = new Vector3(-3f, 15.01f, 25f);
+        Quaternion rotation = Quaternion.Euler(new Vector3(-90, 90, 0));
+        if (IsHost)
+        {
+            GameObject spawnedCard = Instantiate(exampleCard, position, rotation);
+            spawnedCard.GetComponent<CardHandler>().cardSO = gameCardSO;
+        }
+        else
+        {
+            Instantiate(exampleGenericCard, position, rotation);
+        }
         if (OnHostDrawCard != null) OnHostDrawCard.Invoke();
     }
 
     [ClientRpc]
     public void ClientDrawCardClientRpc()
     {
+        Vector3 position = new Vector3(3f, 15.01f, -25f);
+        Quaternion rotation = Quaternion.Euler(new Vector3(-90, -90, 0));
+        if (IsHost)
+        {
+            Instantiate(exampleGenericCard, position, rotation);
+        }
+        else
+        {
+            GameObject spawnedCard = Instantiate(exampleCard, position, rotation);
+            spawnedCard.GetComponent<CardHandler>().cardSO = gameCardSO;
+        }
         if (OnClientDrawCard != null) OnClientDrawCard.Invoke();
+    }
+
+    public void HostSpawnCard(int cardId, CardLocation location, Vector3 position)
+    {
+        Vector3 updatedPos = position + new Vector3(0, 0.1f, 0);
+        GameObject spawnedCard = Instantiate(exampleNetworkCard, updatedPos, Quaternion.Euler(new Vector3(-90, 90, 0)));
+        spawnedCard.GetComponent<NetworkCardHandler>().cardSO = gameCardSO;
+        // Spawn with owner kullanilabilir
+        spawnedCard.GetComponent<NetworkObject>().Spawn();
+    }
+
+    [ClientRpc]
+    public void ClientSpawnCardClientRpc(int cardId, CardLocation location, Vector3 position)
+    {
+        Vector3 updatedPos = position + new Vector3(0, 0.1f, 0);
+        GameObject spawnedCard = Instantiate(exampleNetworkCard, updatedPos, Quaternion.Euler(new Vector3(-90, -90, 0)));
+        spawnedCard.GetComponent<NetworkCardHandler>().cardSO = gameCardSO;
+        // Spawn with owner kullanilabilir
+        spawnedCard.GetComponent<NetworkObject>().Spawn();
     }
 }

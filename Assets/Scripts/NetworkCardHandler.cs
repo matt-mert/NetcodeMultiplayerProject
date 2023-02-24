@@ -21,7 +21,7 @@ public class NetworkCardHandler : NetworkBehaviour
     private MeshRenderer meshRenderer;
 
     [SerializeField]
-    private GameCard cardSO;
+    public GameCard cardSO;
 
     private GenericUnitCard genericUnitCard;
 

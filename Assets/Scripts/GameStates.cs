@@ -53,6 +53,11 @@ public class GameStates : NetworkBehaviour
         }
     }
 
+    public override void OnNetworkSpawn()
+    {
+        currentState.Value = GameState.menu;
+    }
+
     [ClientRpc]
     public void ChangeStateToMenuClientRpc()
     {

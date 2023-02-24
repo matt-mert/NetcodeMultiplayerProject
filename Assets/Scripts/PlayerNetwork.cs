@@ -52,9 +52,9 @@ public class PlayerNetwork : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         InitialConfigurations();
-        GameStates.Instance.currentState.Value = GameStates.GameState.menu;
         NetworkManager.Singleton.SceneManager.OnLoadComplete += OnSceneChanged;
         Touch.onFingerDown += FingerDown;
+        Touch.onFingerMove += FingerMove;
         Touch.onFingerUp += FingerUp;
 
         // Debug
@@ -66,6 +66,7 @@ public class PlayerNetwork : NetworkBehaviour
     {
         NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnSceneChanged;
         Touch.onFingerDown -= FingerDown;
+        Touch.onFingerMove -= FingerMove;
         Touch.onFingerUp -= FingerUp;
 
         // Debug
@@ -115,6 +116,8 @@ public class PlayerNetwork : NetworkBehaviour
 
     private void FingerDown(Finger finger)
     {
+        if (!IsOwner) return;
+
         activeFinger = finger;
         Ray touchRay = playerCamera.ScreenPointToRay(activeFinger.screenPosition);
         RaycastHit checkHit1;
@@ -130,7 +133,6 @@ public class PlayerNetwork : NetworkBehaviour
             draggingObject.localScale = startScale * 2f;
             draggingObject.position = checkHit1.point;
             IsDragging = true;
-            StartCoroutine(DragUpdate(draggingObject));
         }
         else if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, LayerMask.GetMask("FieldCard")))
         {
@@ -144,7 +146,6 @@ public class PlayerNetwork : NetworkBehaviour
                 draggingObject.localScale = startScale * 2f;
                 draggingObject.position = checkHit2.point;
                 IsDragging = true;
-                StartCoroutine(DragUpdate(draggingObject));
             }
             else if (Physics.Raycast(touchRay, out checkHit2, Mathf.Infinity, LayerMask.GetMask("NetworkClientCard")) && !IsHost)
             {
@@ -156,32 +157,43 @@ public class PlayerNetwork : NetworkBehaviour
                 draggingObject.localScale = startScale * 2f;
                 draggingObject.position = checkHit2.point;
                 IsDragging = true;
-                StartCoroutine(DragUpdate(draggingObject));
             }
         }
     }
 
-    private IEnumerator DragUpdate(Transform obj)
+    private void FingerMove(Finger finger)
     {
-        while (activeFinger.isActive)
+        if (!IsOwner) return;
+
+        if (draggingObject == null || !IsDragging) return;
+
+        activeFinger = finger;
+        Ray touchRay = playerCamera.ScreenPointToRay(activeFinger.screenPosition);
+        RaycastHit checkHit;
+        if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("TablePlane")))
         {
-            Ray touchRay = playerCamera.ScreenPointToRay(activeFinger.screenPosition);
-            RaycastHit checkHit;
-            if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("TablePlane")))
-            {
-                obj.transform.position = checkHit.point;
-                yield return new WaitForFixedUpdate();
-            }
-            else break;
+            draggingObject.transform.position = checkHit.point;
         }
-        StopCoroutine(DragUpdate(obj));
+        else
+        {
+            fromLocation = CardManager.CardLocation.Default;
+            toLocation = CardManager.CardLocation.Default;
+
+            draggingObject.position = startPosition;
+            draggingObject.localScale = startScale;
+            draggingObject = null;
+            IsDragging = false;
+            return;
+        }
     }
 
     private void FingerUp(Finger finger)
     {
         if (!IsOwner) return;
 
-        if (!IsDragging) return;
+        if (draggingObject == null || !IsDragging) return;
+
+        activeFinger = finger;
         if (IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.host2)
         {
             fromLocation = CardManager.CardLocation.Default;
@@ -214,6 +226,7 @@ public class PlayerNetwork : NetworkBehaviour
 
             if (Physics.Raycast(touchRay, out checkHit2, Mathf.Infinity, LayerMask.GetMask("NetworkHostCard")))
             {
+                
                 // Check if the move is hand move or field move - compare tag
                 // Check if the move is valid
             }
@@ -223,20 +236,33 @@ public class PlayerNetwork : NetworkBehaviour
             }
             else
             {
+                CardHandler cardHandler = draggingObject.GetComponent<CardHandler>();
+                int cardId = cardHandler.cardId;
+                CardManager.CardLocation location = checkHit1.transform.GetComponent<FieldLocation>().location;
+                Vector3 position = checkHit1.transform.position;
+                Debug.Log("Spawning card with " + cardId + " ID");
+                CardManager.Instance.HostSpawnCard(cardId, location, position);
+                Destroy(draggingObject.gameObject);
 
+                fromLocation = CardManager.CardLocation.Default;
+                toLocation = CardManager.CardLocation.Default;
+
+                draggingObject = null;
+                IsDragging = false;
+                return;
             }
         }
         else
         {
+            fromLocation = CardManager.CardLocation.Default;
+            toLocation = CardManager.CardLocation.Default;
+
             draggingObject.position = startPosition;
             draggingObject.localScale = startScale;
+            draggingObject = null;
+            IsDragging = false;
+            return;
         }
-
-        fromLocation = CardManager.CardLocation.Default;
-        toLocation = CardManager.CardLocation.Default;
-
-        draggingObject = null;
-        IsDragging = false;
     }
 
     private void CheckHostMoveValidity()

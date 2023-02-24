@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3822896192332529621}
   - component: {fileID: 3822896192332529623}
   - component: {fileID: 3822896192332529622}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -150,8 +150,9 @@ GameObject:
   - component: {fileID: 3822896192661642551}
   - component: {fileID: 8946635346693186987}
   - component: {fileID: 9021813895140976841}
-  m_Layer: 7
-  m_Name: NetworkClientCard
+  - component: {fileID: 8909634783621851970}
+  m_Layer: 6
+  m_Name: NetworkCardArda
   m_TagString: FieldCard
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -201,7 +202,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ac5508ccb0de6794998772353fe68b6d, type: 2}
+  - {fileID: 2100000, guid: 671326abbb657804eaa226dbf5f6669e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -271,7 +272,24 @@ MonoBehaviour:
   spawnEnergyText: {fileID: 3822896193324029132}
   moveEnergyText: {fileID: 3822896193389291686}
   meshRenderer: {fileID: 3822896192661642548}
-  cardSO: {fileID: 11400000, guid: dbba26a7b5c934849b317394feadc5ef, type: 2}
+  cardSO: {fileID: 11400000, guid: a9ab1427f80143249a75c138254c00c1, type: 2}
+--- !u!114 &8909634783621851970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3822896192661642547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75fe7512b6cbb8d43a810b721eb3c3c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardSO: {fileID: 11400000, guid: a9ab1427f80143249a75c138254c00c1, type: 2}
+  attack: 0
+  health: 0
+  spawnEnergy: 0
+  moveEnergy: 0
 --- !u!1 &3822896192727596474
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,7 +301,7 @@ GameObject:
   - component: {fileID: 3822896192727596475}
   - component: {fileID: 3822896192727596477}
   - component: {fileID: 3822896192727596476}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Health
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -419,7 +437,7 @@ GameObject:
   - component: {fileID: 3822896193324029131}
   - component: {fileID: 3822896193324029133}
   - component: {fileID: 3822896193324029132}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: SpawnE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -555,7 +573,7 @@ GameObject:
   - component: {fileID: 3822896193389291685}
   - component: {fileID: 3822896193389291687}
   - component: {fileID: 3822896193389291686}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: MoveE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -691,7 +709,7 @@ GameObject:
   - component: {fileID: 3822896193432228576}
   - component: {fileID: 3822896193432228578}
   - component: {fileID: 3822896193432228577}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -827,7 +845,7 @@ GameObject:
   - component: {fileID: 3822896193467553826}
   - component: {fileID: 3822896193467553828}
   - component: {fileID: 3822896193467553827}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Desc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -964,7 +982,7 @@ GameObject:
   - component: {fileID: 3822896194016500437}
   - component: {fileID: 3822896194016500436}
   - component: {fileID: 3822896194016500435}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
