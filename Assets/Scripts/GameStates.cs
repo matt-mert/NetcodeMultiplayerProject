@@ -56,6 +56,13 @@ public class GameStates : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         currentState.Value = GameState.menu;
+        NetworkManager.Singleton.SceneManager.OnLoadComplete += OnSceneChanged;
+    }
+
+    private void OnSceneChanged(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
+    {
+        if (!IsOwner) return;
+
     }
 
     [ClientRpc]
@@ -79,6 +86,7 @@ public class GameStates : NetworkBehaviour
     [ClientRpc]
     public void ChangeStateToStartClientRpc()
     {
+        if (!IsHost) Camera.main.transform.Rotate(new Vector3(0f, 0f, 180f));
         Debug.Log("Changing state to start...");
         currentState.Value = GameState.start;
         if (OnStateChangedToStart != null) OnStateChangedToStart.Invoke();
@@ -90,6 +98,8 @@ public class GameStates : NetworkBehaviour
         Debug.Log("Changing state to Host1...");
         currentState.Value = GameState.host1;
         if (OnStateChangedToHost1 != null) OnStateChangedToHost1.Invoke();
+
+        CardManager.Instance.HostDrawCardClientRpc();
     }
 
     [ClientRpc]
@@ -106,6 +116,8 @@ public class GameStates : NetworkBehaviour
         Debug.Log("Changing state to Client1...");
         currentState.Value = GameState.client1;
         if (OnStateChangedToClient1 != null) OnStateChangedToClient1.Invoke();
+
+        CardManager.Instance.ClientDrawCardClientRpc();
     }
 
     [ClientRpc]

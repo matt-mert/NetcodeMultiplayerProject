@@ -61,6 +61,6 @@ public class InGameUI : MonoBehaviour
 
     private void EndTurn()
     {
-        StateManager.Instance.EndPlayerTurn();
+        
     }
 }

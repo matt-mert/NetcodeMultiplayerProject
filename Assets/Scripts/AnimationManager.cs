@@ -1,6 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class AnimationManager : MonoBehaviour
+public class AnimationManager : NetworkBehaviour
 {
     public AnimationManager Instance { get; private set; }
 
@@ -19,11 +20,15 @@ public class AnimationManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        GameStates.Instance.OnStateChangedToStart += InitializeLights;
     }
 
-    private void InitializeLights()
+    public override void OnNetworkSpawn()
+    {
+        GameStates.Instance.OnStateChangedToStart += InitializeLightsClientRpc;
+    }
+
+    [ClientRpc]
+    private void InitializeLightsClientRpc()
     {
         northAnimator.SetTrigger("OnNorthLightAnim");
         southAnimator.SetTrigger("OnSouthLightAnim");

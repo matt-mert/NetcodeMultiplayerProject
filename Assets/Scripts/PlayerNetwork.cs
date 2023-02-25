@@ -44,38 +44,30 @@ public class PlayerNetwork : NetworkBehaviour
     private InputAction testAction;
     private Vector2 inputVector;
 
-    private void Awake()
-    {
-        InitialConfigurations();
-    }
-
     public override void OnNetworkSpawn()
     {
-        InitialConfigurations();
+        TouchSimulation.Enable();
+        EnhancedTouchSupport.Enable();
+        playerCamera = Camera.main;
+        playerInput = GetComponent<PlayerInput>();
+
         NetworkManager.Singleton.SceneManager.OnLoadComplete += OnSceneChanged;
         Touch.onFingerDown += FingerDown;
         Touch.onFingerMove += FingerMove;
         Touch.onFingerUp += FingerUp;
 
         // Debug
+        moveAction = playerInput.actions["Move"];
+        toggleAction = playerInput.actions["Toggle"];
+        testAction = playerInput.actions["Test"];
         toggleAction.started += ctx => ToggleCode();
         testAction.started += ctx => TestCode();
     }
-
-    public override void OnNetworkDespawn()
+    
+    private void OnSceneChanged(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
     {
-        NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnSceneChanged;
-        Touch.onFingerDown -= FingerDown;
-        Touch.onFingerMove -= FingerMove;
-        Touch.onFingerUp -= FingerUp;
+        if (!IsOwner) return;
 
-        // Debug
-        toggleAction.started -= ctx => ToggleCode();
-        testAction.started -= ctx => TestCode();
-    }
-
-    private void InitialConfigurations()
-    {
         TouchSimulation.Enable();
         EnhancedTouchSupport.Enable();
         playerCamera = Camera.main;
@@ -85,18 +77,6 @@ public class PlayerNetwork : NetworkBehaviour
         moveAction = playerInput.actions["Move"];
         toggleAction = playerInput.actions["Toggle"];
         testAction = playerInput.actions["Test"];
-    }
-
-    private void OnConnectedToServer()
-    {
-        if (!IsOwner) return;
-    }
-
-    private void OnSceneChanged(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
-    {
-        if (!IsOwner) return;
-
-        InitialConfigurations();
     }
 
     private void Update()
@@ -238,10 +218,8 @@ public class PlayerNetwork : NetworkBehaviour
             {
                 CardHandler cardHandler = draggingObject.GetComponent<CardHandler>();
                 int cardId = cardHandler.cardId;
-                CardManager.CardLocation location = checkHit1.transform.GetComponent<FieldLocation>().location;
-                Vector3 position = checkHit1.transform.position;
-                Debug.Log("Spawning card with " + cardId + " ID");
-                CardManager.Instance.HostSpawnCard(cardId, location, position);
+                int location = (int)checkHit1.transform.GetComponent<FieldLocation>().location;
+                InsertFieldListServerRpc(location, cardId);
                 Destroy(draggingObject.gameObject);
 
                 fromLocation = CardManager.CardLocation.Default;
@@ -263,6 +241,12 @@ public class PlayerNetwork : NetworkBehaviour
             IsDragging = false;
             return;
         }
+    }
+
+    [ServerRpc]
+    private void InsertFieldListServerRpc(int location, int cardId)
+    {
+        CardManager.Instance.FieldCardsList.Insert(location, cardId);
     }
 
     private void CheckHostMoveValidity()
@@ -306,6 +290,8 @@ public class PlayerNetwork : NetworkBehaviour
     // Debug
     private void ToggleCode()
     {
+        if (!IsOwner) return;
+
         if (GameStates.Instance.currentState.Value == GameStates.GameState.menu)
         {
             GameStates.Instance.ChangeStateToInitialClientRpc();
@@ -338,12 +324,6 @@ public class PlayerNetwork : NetworkBehaviour
 
     private void TestCode()
     {
-        GameObject test = Instantiate(testPrefab, new Vector3(0, 40, 0), Quaternion.Euler(new Vector3(-90, 90, 0)));
-        ulong clientId = NetworkManager.Singleton.ConnectedClients[0].ClientId;
-        test.GetComponent<NetworkObject>().CheckObjectVisibility = (clientId) =>
-        {
-            return true;
-        };
-        test.GetComponent<NetworkObject>().Spawn();
+
     }
 }

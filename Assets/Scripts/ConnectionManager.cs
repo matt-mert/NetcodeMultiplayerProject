@@ -177,6 +177,7 @@ public class ConnectionManager : NetworkBehaviour
             JoinAllocation alloc = await RelayService.Instance.JoinAllocationAsync(code);
             RelayServerData relayServerData = new RelayServerData(alloc, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+            Debug.Log("??");
             NetworkManager.Singleton.StartClient();
         }
         catch (RelayServiceException e)
