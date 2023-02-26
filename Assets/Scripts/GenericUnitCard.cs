@@ -1,7 +1,6 @@
-using Unity.Netcode;
 using UnityEngine;
 
-public abstract class GenericUnitCard : NetworkBehaviour
+public abstract class GenericUnitCard : MonoBehaviour
 {
     public delegate void TakeDamage(int prev, int next);
     public event TakeDamage OnTakeDamage;
@@ -31,7 +30,7 @@ public abstract class GenericUnitCard : NetworkBehaviour
     [HideInInspector]
     public int moveEnergy;
 
-    public override void OnNetworkSpawn()
+    private void Awake()
     {
         attack = cardSO.cardPower;
         health = cardSO.cardHealth;
@@ -39,7 +38,6 @@ public abstract class GenericUnitCard : NetworkBehaviour
         moveEnergy = cardSO.moveEnergy;
     }
 
-    [ClientRpc]
     public virtual void TakeDamageClientRpc(int amount)
     {
         int prev = health;
@@ -47,7 +45,6 @@ public abstract class GenericUnitCard : NetworkBehaviour
         if (OnTakeDamage != null) OnTakeDamage.Invoke(prev, health);
     }
 
-    [ClientRpc]
     public virtual void GetHealedClientRpc(int amount)
     {
         int prev = health;
@@ -55,7 +52,6 @@ public abstract class GenericUnitCard : NetworkBehaviour
         if (OnGetHealed != null) OnGetHealed.Invoke(prev, health);
     }
 
-    [ClientRpc]
     public virtual void IncreaseAttackClientRpc(int amount)
     {
         int prev = attack;
@@ -63,7 +59,6 @@ public abstract class GenericUnitCard : NetworkBehaviour
         if (OnIncreaseAttack != null) OnIncreaseAttack.Invoke(prev, attack);
     }
 
-    [ClientRpc]
     public virtual void DecreaseAttackClientRpc(int amount)
     {
         int prev = attack;
@@ -71,7 +66,6 @@ public abstract class GenericUnitCard : NetworkBehaviour
         if (OnDecreaseAttack != null) OnDecreaseAttack.Invoke(prev, attack);
     }
 
-    [ClientRpc]
     public virtual void IncreaseMoveEnergyClientRpc(int amount)
     {
         int prev = moveEnergy;
@@ -79,7 +73,6 @@ public abstract class GenericUnitCard : NetworkBehaviour
         if (OnIncreaseMoveEnergy != null) OnIncreaseMoveEnergy.Invoke(prev, moveEnergy);
     }
 
-    [ClientRpc]
     public virtual void DecreaseMoveEnergyClientRpc(int amount)
     {
         int prev = moveEnergy;
@@ -87,7 +80,6 @@ public abstract class GenericUnitCard : NetworkBehaviour
         if (OnDecreaseMoveEnergy != null) OnDecreaseMoveEnergy.Invoke(prev, moveEnergy);
     }
 
-    [ClientRpc]
     public virtual void IncreaseSpawnEnergyClientRpc(int amount)
     {
         int prev = spawnEnergy;
@@ -95,7 +87,6 @@ public abstract class GenericUnitCard : NetworkBehaviour
         if (OnIncreaseSpawnEnergy != null) OnIncreaseSpawnEnergy.Invoke(prev, spawnEnergy);
     }
 
-    [ClientRpc]
     public virtual void DecreaseSpawnEnergyClientRpc(int amount)
     {
         int prev = spawnEnergy;
@@ -103,7 +94,6 @@ public abstract class GenericUnitCard : NetworkBehaviour
         if (OnDecreaseSpawnEnergy != null) OnDecreaseSpawnEnergy.Invoke(prev, spawnEnergy);
     }
 
-    [ClientRpc]
     public virtual void SpawnFromHandClientRpc()
     {
 

@@ -39,8 +39,12 @@ public class CardHandler : MonoBehaviour
     [HideInInspector]
     public GameCard.Properties property;
 
+    private GenericUnitCard genericUnit;
+
     private void Awake()
     {
+        // genericUnit = GetComponent<GenericUnitCard>();
+
         cardId = cardSO.cardId;
 
         cardMaterial = cardSO.cardMaterial;
@@ -63,5 +67,7 @@ public class CardHandler : MonoBehaviour
 
         moveEnergy = cardSO.moveEnergy;
         moveEnergyText.text = moveEnergy.ToString();
+
+
     }
 }

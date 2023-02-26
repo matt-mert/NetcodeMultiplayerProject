@@ -12,7 +12,7 @@ public class CardManager : NetworkBehaviour
     public NetworkList<int> FieldCardsList;
 
     [SerializeField]
-    private GameDeck gameDeck;
+    private GameDeck gameDeckSO;
 
     private Dictionary<CardLocation, Vector3> dictionary;
 
@@ -25,8 +25,6 @@ public class CardManager : NetworkBehaviour
     private GameObject exampleCard;
     [SerializeField]
     private GameCard gameCardSO;
-    [SerializeField]
-    private GameCard genericCardSO;
 
     public enum CardLocation
     {
@@ -73,6 +71,8 @@ public class CardManager : NetworkBehaviour
     {
         NetworkManager.Singleton.SceneManager.OnLoadComplete += OnSceneChanged;
         GameStates.Instance.OnStateChangedToStart += InitializeLocationsClientRpc;
+        HostCardsList.OnListChanged += HostDrawListener;
+        ClientCardsList.OnListChanged += ClientDrawListener;
         FieldCardsList.OnListChanged += SpawnCardListener;
     }
 
@@ -96,10 +96,36 @@ public class CardManager : NetworkBehaviour
 
         if (!IsServer) return;
 
+        for (int i = 0; i < 5; i++)
+        {
+            HostCardsList.Add(0);
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            ClientCardsList.Add(0);
+        }
+
         for (int i = 0; i < 16; i++)
         {
             FieldCardsList.Add(0);
         }
+    }
+
+    [ServerRpc]
+    public void InsertHostListServerRpc(int index, int cardId)
+    {
+        HostCardsList.Insert(index, cardId);
+    }
+
+    private void HostDrawListener(NetworkListEvent<int> change)
+    {
+        if (GameStates.Instance.currentState.Value != GameStates.GameState.host1)
+            return;
+
+        if (!IsServer) return;
+
+        HostDrawCardClientRpc();
     }
 
     [ClientRpc]
@@ -118,6 +144,22 @@ public class CardManager : NetworkBehaviour
         }
     }
 
+    [ServerRpc]
+    public void InsertClientListServerRpc(int index, int cardId)
+    {
+        ClientCardsList.Insert(index, cardId);
+    }
+
+    private void ClientDrawListener(NetworkListEvent<int> change)
+    {
+        if (GameStates.Instance.currentState.Value != GameStates.GameState.client1)
+            return;
+
+        if (!IsServer) return;
+
+        ClientDrawCardClientRpc();
+    }
+
     [ClientRpc]
     public void ClientDrawCardClientRpc()
     {
@@ -134,6 +176,12 @@ public class CardManager : NetworkBehaviour
         }
     }
 
+    [ServerRpc]
+    public void InsertFieldListServerRpc(int location, int cardId)
+    {
+        FieldCardsList.Insert(location, cardId);
+    }
+
     private void SpawnCardListener(NetworkListEvent<int> change)
     {
         if (GameStates.Instance.currentState.Value != GameStates.GameState.host2 &&
@@ -141,17 +189,26 @@ public class CardManager : NetworkBehaviour
             return;
 
         int index = change.Index;
+
         if (!IsServer) return;
+
         SpawnCardClientRpc(index);
     }
 
     [ClientRpc]
     private void SpawnCardClientRpc(int index)
     {
-        Vector3 position = dictionary[(CardLocation)index];
-        Quaternion hostRotation = Quaternion.Euler(new Vector3(-90f, 90f, 0f));
-        Quaternion clientRotation = Quaternion.Euler(new Vector3(-90f, -90f, 0f));
-        if (IsHost) Instantiate(exampleCard, position, hostRotation);
-        else Instantiate(exampleCard, position, clientRotation);
+        if (IsHost)
+        {
+            Vector3 hostPosition = dictionary[(CardLocation)index];
+            Quaternion hostRotation = Quaternion.Euler(new Vector3(-90f, 90f, 0f));
+            Instantiate(exampleCard, hostPosition, hostRotation);
+        }
+        else
+        {
+            Vector3 clientPosition = dictionary[(CardLocation)index];
+            Quaternion clientRotation = Quaternion.Euler(new Vector3(-90f, -90f, 0f));
+            Instantiate(exampleCard, clientPosition, clientRotation);
+        }
     }
 }

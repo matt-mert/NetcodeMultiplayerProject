@@ -29,7 +29,6 @@ public class PlayerNetwork : NetworkBehaviour
     private Vector3 startPosition = Vector3.zero;
     private Vector3 startScale = Vector3.zero;
     private Finger activeFinger = null;
-    private bool moveIsValid;
 
     private CardManager.CardLocation fromLocation;
     private CardManager.CardLocation toLocation;
@@ -95,7 +94,11 @@ public class PlayerNetwork : NetworkBehaviour
     {
         if (!IsOwner) return;
 
+        if (draggingObject != null || IsDragging) return;
+
         activeFinger = finger;
+        if (activeFinger.index > 0) return;
+
         Ray touchRay = playerCamera.ScreenPointToRay(activeFinger.screenPosition);
         RaycastHit checkHit1;
         RaycastHit checkHit2;
@@ -145,6 +148,8 @@ public class PlayerNetwork : NetworkBehaviour
         if (draggingObject == null || !IsDragging) return;
 
         activeFinger = finger;
+        if (activeFinger.index > 0) return;
+
         Ray touchRay = playerCamera.ScreenPointToRay(activeFinger.screenPosition);
         RaycastHit checkHit;
         if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("TablePlane")))
@@ -171,6 +176,8 @@ public class PlayerNetwork : NetworkBehaviour
         if (draggingObject == null || !IsDragging) return;
 
         activeFinger = finger;
+        if (activeFinger.index > 0) return;
+
         if (IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.host2)
         {
             fromLocation = CardManager.CardLocation.Default;
@@ -204,8 +211,6 @@ public class PlayerNetwork : NetworkBehaviour
             if (Physics.Raycast(touchRay, out checkHit2, Mathf.Infinity, LayerMask.GetMask("NetworkHostCard")))
             {
                 
-                // Check if the move is hand move or field move - compare tag
-                // Check if the move is valid
             }
             else if (Physics.Raycast(touchRay, out checkHit2, Mathf.Infinity, LayerMask.GetMask("NetworkClientCard")))
             {
@@ -216,7 +221,8 @@ public class PlayerNetwork : NetworkBehaviour
                 CardHandler cardHandler = draggingObject.GetComponent<CardHandler>();
                 int cardId = cardHandler.cardId;
                 int location = (int)checkHit1.transform.GetComponent<FieldLocation>().location;
-                InsertFieldListServerRpc(location, cardId);
+                CardManager.Instance.InsertFieldListServerRpc(location, cardId);
+                // InsertFieldListServerRpc(location, cardId);
                 Destroy(draggingObject.gameObject);
 
                 fromLocation = CardManager.CardLocation.Default;
@@ -240,49 +246,13 @@ public class PlayerNetwork : NetworkBehaviour
         }
     }
 
+    /*
     [ServerRpc]
     private void InsertFieldListServerRpc(int location, int cardId)
     {
         CardManager.Instance.FieldCardsList.Insert(location, cardId);
     }
-
-    private void CheckHostMoveValidity()
-    {
-        moveIsValid = true;
-    }
-
-    private void CheckClientMoveValidity()
-    {
-        moveIsValid = true;
-    }
-
-    [ServerRpc]
-    private void CheckHostMoveValidityServerRpc()
-    {
-
-    }
-
-    [ServerRpc]
-    private void CheckClientMoveValidityServerRpc()
-    {
-
-    }
-
-    [ClientRpc]
-    private void HostMoveClientRpc()
-    {
-        // Do same checks here again
-
-        if (OnHostMove != null) OnHostMove.Invoke();
-    }
-
-    [ClientRpc]
-    private void ClientMoveClientRpc()
-    {
-        // Do same checks here again
-        
-        if (OnClientMove != null) OnClientMove.Invoke();
-    }
+    */
 
     // Debug
 
@@ -322,6 +292,6 @@ public class PlayerNetwork : NetworkBehaviour
 
     private void TestCode()
     {
-
+        
     }
 }
