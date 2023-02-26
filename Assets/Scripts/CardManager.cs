@@ -16,14 +16,13 @@ public class CardManager : NetworkBehaviour
 
     private Dictionary<CardLocation, Vector3> dictionary;
 
+    [SerializeField]
+    private GameObject genericCard;
+
     // Debug
 
     [SerializeField]
     private GameObject exampleCard;
-    [SerializeField]
-    private GameObject exampleGenericCard;
-    [SerializeField]
-    private GameObject exampleNetworkCard;
     [SerializeField]
     private GameCard gameCardSO;
     [SerializeField]
@@ -115,7 +114,7 @@ public class CardManager : NetworkBehaviour
         }
         else
         {
-            Instantiate(exampleGenericCard, position, rotation);
+            Instantiate(genericCard, position, rotation);
         }
     }
 
@@ -126,7 +125,7 @@ public class CardManager : NetworkBehaviour
         Quaternion rotation = Quaternion.Euler(new Vector3(-90f, -90f, 0f));
         if (IsHost)
         {
-            Instantiate(exampleGenericCard, position, rotation);
+            Instantiate(genericCard, position, rotation);
         }
         else
         {
@@ -140,7 +139,7 @@ public class CardManager : NetworkBehaviour
         if (GameStates.Instance.currentState.Value != GameStates.GameState.host2 &&
             GameStates.Instance.currentState.Value != GameStates.GameState.client2)
             return;
-        Debug.Log("Spawn Card Listener!!");
+
         int index = change.Index;
         if (!IsServer) return;
         SpawnCardClientRpc(index);
@@ -154,14 +153,5 @@ public class CardManager : NetworkBehaviour
         Quaternion clientRotation = Quaternion.Euler(new Vector3(-90f, -90f, 0f));
         if (IsHost) Instantiate(exampleCard, position, hostRotation);
         else Instantiate(exampleCard, position, clientRotation);
-    }
-
-    public void HostSpawnCardxd(int cardId, CardLocation location, Vector3 position)
-    {
-        Vector3 updatedPos = position + new Vector3(0, 0.1f, 0);
-        GameObject spawnedCard = Instantiate(exampleNetworkCard, updatedPos, Quaternion.Euler(new Vector3(-90, 90, 0)));
-        spawnedCard.GetComponent<NetworkCardHandler>().cardSO = gameCardSO;
-        NetworkObject networkObject = spawnedCard.GetComponent<NetworkObject>();
-        networkObject.Spawn();
     }
 }

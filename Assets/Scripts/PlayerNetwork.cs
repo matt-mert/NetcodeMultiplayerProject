@@ -36,9 +36,6 @@ public class PlayerNetwork : NetworkBehaviour
 
     // Debug
 
-    [SerializeField]
-    private GameObject testPrefab;
-
     private InputAction moveAction;
     private InputAction toggleAction;
     private InputAction testAction;
@@ -288,6 +285,7 @@ public class PlayerNetwork : NetworkBehaviour
     }
 
     // Debug
+
     private void ToggleCode()
     {
         if (!IsOwner) return;
