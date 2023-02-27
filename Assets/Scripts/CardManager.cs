@@ -112,10 +112,16 @@ public class CardManager : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void InsertHostListServerRpc(int index, int cardId)
     {
         HostCardsList.Insert(index, cardId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RemoveHostListServerRpc(int index)
+    {
+        HostCardsList.Insert(index, 0);
     }
 
     private void HostDrawListener(NetworkListEvent<int> change)
@@ -131,23 +137,31 @@ public class CardManager : NetworkBehaviour
     [ClientRpc]
     public void HostDrawCardClientRpc()
     {
-        Vector3 position = new Vector3(-3f, 15.01f, 25f);
+        Vector3 position = new Vector3(0f, 15.01f, 25f);
         Quaternion rotation = Quaternion.Euler(new Vector3(-90f, 90f, 0f));
         if (IsHost)
         {
             GameObject spawnedCard = Instantiate(exampleCard, position, rotation);
             spawnedCard.GetComponent<CardHandler>().cardSO = gameCardSO;
+            // Burda hostcardliste eklemek laz?m
         }
         else
         {
             Instantiate(genericCard, position, rotation);
+            // Burda bu dummy card? tutmak laz?m
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void InsertClientListServerRpc(int index, int cardId)
     {
         ClientCardsList.Insert(index, cardId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RemoveClientListServerRpc(int index)
+    {
+        ClientCardsList.Insert(index, 0);
     }
 
     private void ClientDrawListener(NetworkListEvent<int> change)
@@ -163,23 +177,31 @@ public class CardManager : NetworkBehaviour
     [ClientRpc]
     public void ClientDrawCardClientRpc()
     {
-        Vector3 position = new Vector3(3f, 15.01f, -25f);
+        Vector3 position = new Vector3(0f, 15.01f, -25f);
         Quaternion rotation = Quaternion.Euler(new Vector3(-90f, -90f, 0f));
         if (IsHost)
         {
             Instantiate(genericCard, position, rotation);
+            // Burda bu dummy card? tutmak laz?m
         }
         else
         {
             GameObject spawnedCard = Instantiate(exampleCard, position, rotation);
             spawnedCard.GetComponent<CardHandler>().cardSO = gameCardSO;
+            // Burda clientcardliste eklemek laz?m
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     public void InsertFieldListServerRpc(int location, int cardId)
     {
         FieldCardsList.Insert(location, cardId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RemoveFieldListServerRpc(int index)
+    {
+        FieldCardsList.Insert(index, 0);
     }
 
     private void SpawnCardListener(NetworkListEvent<int> change)
@@ -188,15 +210,30 @@ public class CardManager : NetworkBehaviour
             GameStates.Instance.currentState.Value != GameStates.GameState.client2)
             return;
 
+        if (change.Value == 0)
+        {
+            if (IsHost)
+            {
+                // Destroy dummy card
+
+            }
+            else
+            {
+                // Destroy dummy card
+
+            }
+        }
+
         int index = change.Index;
+        int newCardId = change.Value;
 
         if (!IsServer) return;
 
-        SpawnCardClientRpc(index);
+        SpawnCardClientRpc(index, 1);
     }
 
     [ClientRpc]
-    private void SpawnCardClientRpc(int index)
+    private void SpawnCardClientRpc(int index, int cardId)
     {
         if (IsHost)
         {

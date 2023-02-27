@@ -1,4 +1,4 @@
-using System.Collections;
+using Newtonsoft.Json.Bson;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,15 +10,6 @@ public class PlayerNetwork : NetworkBehaviour
 {
     [SerializeField]
     private float playerSpeed = 10.0f;
-
-    public delegate void HostMove();
-    public event HostMove OnHostMove;
-    public delegate void ClientMove();
-    public event ClientMove OnClientMove;
-    public delegate void HostDraw();
-    public event HostDraw OnHostDraw;
-    public delegate void ClientDraw();
-    public event ClientDraw OnClientDraw;
 
     [HideInInspector]
     public bool IsDragging;
@@ -222,7 +213,21 @@ public class PlayerNetwork : NetworkBehaviour
                 int cardId = cardHandler.cardId;
                 int location = (int)checkHit1.transform.GetComponent<FieldLocation>().location;
                 CardManager.Instance.InsertFieldListServerRpc(location, cardId);
-                // InsertFieldListServerRpc(location, cardId);
+
+                if (fromLocation == CardManager.CardLocation.HostHand)
+                {
+                    CardManager.Instance.RemoveHostListServerRpc(cardHandler.GetIndex());
+                }
+                else if (fromLocation == CardManager.CardLocation.ClientHand)
+                {
+                    CardManager.Instance.RemoveClientListServerRpc(cardHandler.GetIndex());
+                }
+                else
+                {
+                    CardManager.Instance.RemoveFieldListServerRpc((int)fromLocation);
+                }
+
+                Debug.Log(toLocation + " xxx " + fromLocation);
                 Destroy(draggingObject.gameObject);
 
                 fromLocation = CardManager.CardLocation.Default;
@@ -245,14 +250,6 @@ public class PlayerNetwork : NetworkBehaviour
             return;
         }
     }
-
-    /*
-    [ServerRpc]
-    private void InsertFieldListServerRpc(int location, int cardId)
-    {
-        CardManager.Instance.FieldCardsList.Insert(location, cardId);
-    }
-    */
 
     // Debug
 
