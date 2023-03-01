@@ -10,6 +10,9 @@ using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using UnityEngine;
 
+// Written by https://github.com/matt-mert
+// Thanks to Code Monkey for great tutorial
+
 public class ConnectionManager : NetworkBehaviour
 {
     public static ConnectionManager Instance { get; private set; }

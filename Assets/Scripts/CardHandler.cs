@@ -1,6 +1,8 @@
 using TMPro;
 using UnityEngine;
 
+// Written by https://github.com/matt-mert
+
 public class CardHandler : MonoBehaviour
 {
     [SerializeField]
@@ -68,4 +70,6 @@ public class CardHandler : MonoBehaviour
         moveEnergy = cardSO.moveEnergy;
         moveEnergyText.text = moveEnergy.ToString();
     }
+
+    // TODO: Update text methods listening to take damage etc calls
 }

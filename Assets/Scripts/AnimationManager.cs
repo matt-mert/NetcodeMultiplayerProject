@@ -1,6 +1,8 @@
 using Unity.Netcode;
 using UnityEngine;
 
+// Written by https://github.com/matt-mert
+
 public class AnimationManager : NetworkBehaviour
 {
     public AnimationManager Instance { get; private set; }

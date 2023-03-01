@@ -4,6 +4,8 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Written by https://github.com/matt-mert
+
 public class CardManager : NetworkBehaviour
 {
     public static CardManager Instance { get; private set; }

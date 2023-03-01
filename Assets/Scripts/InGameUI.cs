@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Written by https://github.com/matt-mert
+
 public class InGameUI : MonoBehaviour
 {
     [SerializeField]

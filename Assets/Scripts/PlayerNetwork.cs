@@ -5,6 +5,8 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.SceneManagement;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
+// Written by https://github.com/matt-mert
+
 public class PlayerNetwork : NetworkBehaviour
 {
     [SerializeField]

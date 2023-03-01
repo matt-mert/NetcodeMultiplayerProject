@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// Written by https://github.com/matt-mert
+
 [CreateAssetMenu(fileName = "New Card", menuName = "My Assets/Card Data")]
 public class GameCard : ScriptableObject
 {

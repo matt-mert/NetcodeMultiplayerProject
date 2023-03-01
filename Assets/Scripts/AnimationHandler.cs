@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// Written by https://github.com/matt-mert
+
 public class AnimationHandler : MonoBehaviour
 {
     private Animator animator;

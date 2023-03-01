@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// Written by https://github.com/matt-mert
+
 public abstract class GenericUnitCard : MonoBehaviour
 {
     public delegate void TakeDamage(int prev, int next);
@@ -92,10 +94,5 @@ public abstract class GenericUnitCard : MonoBehaviour
         int prev = spawnEnergy;
         spawnEnergy += amount;
         if (OnDecreaseSpawnEnergy != null) OnDecreaseSpawnEnergy.Invoke(prev, spawnEnergy);
-    }
-
-    public virtual void SpawnFromHandClientRpc()
-    {
-
     }
 }

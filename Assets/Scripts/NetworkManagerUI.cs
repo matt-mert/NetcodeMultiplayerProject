@@ -3,6 +3,8 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Written by https://github.com/matt-mert
+
 public class NetworkManagerUI : MonoBehaviour
 {
     [SerializeField]
