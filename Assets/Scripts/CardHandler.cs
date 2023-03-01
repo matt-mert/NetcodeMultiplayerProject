@@ -18,8 +18,6 @@ public class CardHandler : MonoBehaviour
     [SerializeField]
     private MeshRenderer meshRenderer;
 
-    private int cardIndex;
-
     public GameCard cardSO;
 
     [HideInInspector]
@@ -69,25 +67,5 @@ public class CardHandler : MonoBehaviour
 
         moveEnergy = cardSO.moveEnergy;
         moveEnergyText.text = moveEnergy.ToString();
-    }
-
-    public int GetIndex()
-    {
-        return cardIndex;
-    }
-
-    public void SetIndex(int value)
-    {
-        cardIndex = value;
-    }
-
-    public void IncrementIndex(int amount = 1)
-    {
-        cardIndex += amount;
-    }
-
-    public void DecrementIndex(int amount = 1)
-    {
-        cardIndex -= amount;
     }
 }

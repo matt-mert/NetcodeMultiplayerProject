@@ -6,6 +6,8 @@ TagManager:
   tags:
   - HandCard
   - FieldCard
+  - HostCard
+  - ClientCard
   layers:
   - Default
   - TransparentFX
@@ -13,11 +15,11 @@ TagManager:
   - TablePlane
   - Water
   - UI
-  - NetworkHostCard
-  - NetworkClientCard
-  - FieldCard
+  - HostCard
+  - ClientCard
+  - FieldPlane
   - PlayerCard
-  - 
+  - FieldCard
   - 
   - 
   - 

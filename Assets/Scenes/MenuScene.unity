@@ -1208,13 +1208,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5c3079e0f3b85a4db1ad1e92f6521ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameDeckSO: {fileID: 11400000, guid: 1bff42f8ce9e81647ac54e3b46aab180, type: 2}
   genericCard: {fileID: 444701593150942330, guid: 609c93c20096304479e4cd717777bfc4,
     type: 3}
+  gameDeckSO: {fileID: 11400000, guid: 1bff42f8ce9e81647ac54e3b46aab180, type: 2}
+  handLimit: 5
   exampleCard: {fileID: 3822896192661642547, guid: 4f5e7a53921ad2f4f98ee1d28ff567df,
     type: 3}
+  exampleHandCard: {fileID: 3822896192661642547, guid: 58b3cae5f66b90449b70f37816fb5b03,
+    type: 3}
   gameCardSO: {fileID: 11400000, guid: a9ab1427f80143249a75c138254c00c1, type: 2}
-  genericCardSO: {fileID: 11400000, guid: 6408c98253b36774fa8f289ae2ba7696, type: 2}
 --- !u!4 &952468481
 Transform:
   m_ObjectHideFlags: 0
