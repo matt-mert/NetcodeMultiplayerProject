@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class CardIndexer : MonoBehaviour
 {
-    [SerializeField]
     private int cardIndex;
 
     public int GetIndex()
