@@ -35,7 +35,7 @@ public class InGameUI : MonoBehaviour
         settingsButton.onClick.AddListener(OpenSettings);
         closeSettingsButton.onClick.AddListener(CloseSettings);
         disconnectButton.onClick.AddListener(DisconnectFromGame);
-        endTurnButton.onClick.AddListener(EndTurn);
+        // endTurnButton.onClick.AddListener(EndTurn);
     }
 
     private void OnDisable()
@@ -43,7 +43,7 @@ public class InGameUI : MonoBehaviour
         settingsButton.onClick.RemoveListener(OpenSettings);
         closeSettingsButton.onClick.RemoveListener(CloseSettings);
         disconnectButton.onClick.RemoveListener(DisconnectFromGame);
-        endTurnButton.onClick.RemoveListener(EndTurn);
+        // endTurnButton.onClick.RemoveListener(EndTurn);
     }
 
     private void OpenSettings()

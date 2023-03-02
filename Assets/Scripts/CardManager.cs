@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,6 +26,8 @@ public class CardManager : NetworkBehaviour
 
     private Dictionary<CardLocation, Vector3> dictionary;
     private List<GameObject> genericCardsList;
+    private List<GameObject> fieldHostObjectsList;
+    private List<GameObject> fieldClientObjectsList;
     private List<GameObject> hostHandObjectsList;
     private List<GameObject> clientHandObjectsList;
 
@@ -73,6 +76,8 @@ public class CardManager : NetworkBehaviour
 
         dictionary = new Dictionary<CardLocation, Vector3>();
         genericCardsList = new List<GameObject>();
+        fieldHostObjectsList = new List<GameObject>();
+        fieldClientObjectsList = new List<GameObject>();
         hostHandObjectsList = new List<GameObject>();
         clientHandObjectsList = new List<GameObject>();
 
@@ -112,7 +117,17 @@ public class CardManager : NetworkBehaviour
         {
             genericCardsList.Add(null);
         }
-        
+
+        for (int i = 0; i < fieldLocations.Length + 1; i++)
+        {
+            fieldHostObjectsList.Add(null);
+        }
+
+        for (int i = 0; i < fieldLocations.Length + 1; i++)
+        {
+            fieldClientObjectsList.Add(null);
+        }
+
         for (int i = 0; i < handLimit; i++)
         {
             hostHandObjectsList.Add(null);
@@ -140,14 +155,20 @@ public class CardManager : NetworkBehaviour
             FieldCardsList.Add(0);
         }
 
-        StartCoroutine(HostCardListDebugger());
+        // StartCoroutine(HostCardListDebugger());
     }
 
     private IEnumerator HostCardListDebugger()
     {
         while (true)
         {
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(3);
+            Debug.Log(FieldCardsList[0].ToString() + FieldCardsList[1].ToString()
+                + FieldCardsList[2].ToString() + FieldCardsList[3].ToString() + FieldCardsList[4].ToString()
+                + FieldCardsList[5].ToString() + FieldCardsList[6].ToString() + FieldCardsList[7].ToString()
+                + FieldCardsList[8].ToString() + FieldCardsList[9].ToString() + FieldCardsList[10].ToString()
+                + FieldCardsList[11].ToString() + FieldCardsList[12].ToString() + FieldCardsList[13].ToString()
+                + FieldCardsList[14].ToString() + FieldCardsList[15].ToString());
             Debug.Log(HostCardsList[0].ToString() + HostCardsList[1].ToString()
                 + HostCardsList[2].ToString() + HostCardsList[3].ToString() + HostCardsList[4].ToString());
             Debug.Log(ClientCardsList[0].ToString() + ClientCardsList[1].ToString()
@@ -309,20 +330,22 @@ public class CardManager : NetworkBehaviour
             GameStates.Instance.currentState.Value != GameStates.GameState.client2)
             return;
 
-        if (change.Value == 0) return;
-
-        int index = change.Index;
-        int newCardId = change.Value;
-
         if (!IsServer) return;
 
-        if (GameStates.Instance.currentState.Value == GameStates.GameState.host2)
+        if (change.Value == 0)
         {
-            SpawnHostCardClientRpc(index, 1);
+            DespawnFieldCardClientRpc(change.Index);
         }
-        else if (GameStates.Instance.currentState.Value == GameStates.GameState.client2)
+        else if (change.PreviousValue == 0)
         {
-            SpawnClientCardClientRpc(index, 1);
+            if (GameStates.Instance.currentState.Value == GameStates.GameState.host2)
+            {
+                SpawnHostCardClientRpc(change.Index, 1);
+            }
+            else if (GameStates.Instance.currentState.Value == GameStates.GameState.client2)
+            {
+                SpawnClientCardClientRpc(change.Index, 1);
+            }
         }
     }
 
@@ -331,17 +354,21 @@ public class CardManager : NetworkBehaviour
     {
         if (IsHost)
         {
-            Vector3 hostPosition = dictionary[(CardLocation)index];
+            CardLocation location = (CardLocation)index;
+            Vector3 hostPosition = dictionary[location];
             Quaternion hostRotation = Quaternion.Euler(new Vector3(-90f, 90f, 0f));
             GameObject spawned = Instantiate(exampleCard, hostPosition, hostRotation);
             spawned.tag = "HostCard";
+            fieldHostObjectsList[index] = spawned;
         }
         else
         {
-            Vector3 clientPosition = dictionary[(CardLocation)index];
+            CardLocation location = (CardLocation)index;
+            Vector3 clientPosition = dictionary[location];
             Quaternion clientRotation = Quaternion.Euler(new Vector3(-90f, -90f, 0f));
             GameObject spawned = Instantiate(exampleCard, clientPosition, clientRotation);
             spawned.tag = "HostCard";
+            fieldHostObjectsList[index] = spawned;
         }
     }
 
@@ -350,18 +377,49 @@ public class CardManager : NetworkBehaviour
     {
         if (IsHost)
         {
-            Vector3 hostPosition = dictionary[(CardLocation)index];
+            CardLocation location = (CardLocation)index;
+            Vector3 hostPosition = dictionary[location];
             Quaternion hostRotation = Quaternion.Euler(new Vector3(-90f, 90f, 0f));
             GameObject spawned = Instantiate(exampleCard, hostPosition, hostRotation);
             spawned.tag = "ClientCard";
+            fieldClientObjectsList[index] = spawned;
         }
         else
         {
-            Vector3 clientPosition = dictionary[(CardLocation)index];
+            CardLocation location = (CardLocation)index;
+            Vector3 clientPosition = dictionary[location];
             Quaternion clientRotation = Quaternion.Euler(new Vector3(-90f, -90f, 0f));
             GameObject spawned = Instantiate(exampleCard, clientPosition, clientRotation);
             spawned.tag = "ClientCard";
+            fieldClientObjectsList[index] = spawned;
         }
+    }
+
+    [ClientRpc]
+    private void DespawnFieldCardClientRpc(int index)
+    {
+        if (fieldHostObjectsList[index] != null)
+        {
+            Destroy(fieldHostObjectsList[index]);
+            fieldHostObjectsList[index] = null;
+        }
+        else if (fieldClientObjectsList[index] != null)
+        {
+            Destroy(fieldClientObjectsList[index]);
+            fieldClientObjectsList[index] = null;
+        }
+    }
+
+    [ClientRpc]
+    private void MoveHostCardClientRpc(int from, int to)
+    {
+
+    }
+
+    [ClientRpc]
+    private void MoveClientCardClientRpc(int from, int to)
+    {
+
     }
 
     private int FindFirstEmptyIndex(NetworkList<int> list)

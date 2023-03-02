@@ -232,8 +232,7 @@ public class PlayerNetwork : NetworkBehaviour
                     int cardId = cardHandler.cardId;
                     CardManager.Instance.InsertFieldListServerRpc((int)toLocation, cardId);
                     CardManager.Instance.RemoveHostListServerRpc(cardIndexer.GetIndex());
-                    Debug.Log(toLocation + " xxx " + fromLocation);
-                    // Destroy(draggingObject.gameObject);
+                    Debug.Log("from " + fromLocation + " to " + toLocation);
 
                     fromLocation = CardManager.CardLocation.Default;
                     toLocation = CardManager.CardLocation.Default;
@@ -251,8 +250,7 @@ public class PlayerNetwork : NetworkBehaviour
                     int cardId = cardHandler.cardId;
                     CardManager.Instance.InsertFieldListServerRpc((int)toLocation, cardId);
                     CardManager.Instance.RemoveClientListServerRpc(cardIndexer.GetIndex());
-                    Debug.Log(toLocation + " xxx " + fromLocation);
-                    // Destroy(draggingObject.gameObject);
+                    Debug.Log("from " + fromLocation + " to " + toLocation);
 
                     fromLocation = CardManager.CardLocation.Default;
                     toLocation = CardManager.CardLocation.Default;
@@ -282,8 +280,7 @@ public class PlayerNetwork : NetworkBehaviour
                     int cardId = cardHandler.cardId;
                     CardManager.Instance.InsertFieldListServerRpc((int)toLocation, cardId);
                     CardManager.Instance.RemoveFieldListServerRpc((int)fromLocation);
-                    Debug.Log(toLocation + " xxx " + fromLocation);
-                    Destroy(draggingObject.gameObject);
+                    Debug.Log("from " + fromLocation + " to " + toLocation);
 
                     fromLocation = CardManager.CardLocation.Default;
                     toLocation = CardManager.CardLocation.Default;
