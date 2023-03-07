@@ -288,7 +288,7 @@ public class PlayerNetwork : NetworkBehaviour
 
     private void ToggleCode()
     {
-        if (!IsOwner) return;
+        if (!IsHost) return;
 
         if (GameStates.Instance.currentState.Value == GameStates.GameState.menu)
         {
