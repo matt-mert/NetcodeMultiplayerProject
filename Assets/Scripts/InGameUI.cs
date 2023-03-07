@@ -25,11 +25,6 @@ public class InGameUI : MonoBehaviour
     [SerializeField]
     private GameObject panel;
 
-    private void Awake()
-    {
-        
-    }
-
     private void OnEnable()
     {
         settingsButton.onClick.AddListener(OpenSettings);

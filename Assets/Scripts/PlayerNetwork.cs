@@ -9,9 +9,6 @@ using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 public class PlayerNetwork : NetworkBehaviour
 {
-    [SerializeField]
-    private float playerSpeed = 10.0f;
-
     [HideInInspector]
     public bool IsDragging;
 
@@ -27,10 +24,8 @@ public class PlayerNetwork : NetworkBehaviour
 
     // Debug
 
-    private InputAction moveAction;
     private InputAction toggleAction;
     private InputAction testAction;
-    private Vector2 inputVector;
 
     public override void OnNetworkSpawn()
     {
@@ -45,7 +40,6 @@ public class PlayerNetwork : NetworkBehaviour
         Touch.onFingerUp += FingerUp;
 
         // Debug
-        moveAction = playerInput.actions["Move"];
         toggleAction = playerInput.actions["Toggle"];
         testAction = playerInput.actions["Test"];
         toggleAction.started += ctx => ToggleCode();
@@ -62,24 +56,8 @@ public class PlayerNetwork : NetworkBehaviour
         playerInput = GetComponent<PlayerInput>();
 
         // Debug
-        moveAction = playerInput.actions["Move"];
         toggleAction = playerInput.actions["Toggle"];
         testAction = playerInput.actions["Test"];
-    }
-
-    private void Update()
-    {
-        if (!IsOwner) return;
-
-        inputVector = moveAction.ReadValue<Vector2>();
-    }
-
-    private void FixedUpdate()
-    {
-        if (!IsOwner) return;
-
-        Vector3 moveVector = new Vector3(inputVector.x, 0, inputVector.y);
-        transform.Translate(moveVector * playerSpeed * Time.fixedDeltaTime);
     }
 
     private void FingerDown(Finger finger)
@@ -94,7 +72,7 @@ public class PlayerNetwork : NetworkBehaviour
         Ray touchRay = playerCamera.ScreenPointToRay(activeFinger.screenPosition);
         RaycastHit checkHit1;
         RaycastHit checkHit2;
-        if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, LayerMask.GetMask("PlayerCard")))
+        if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, 1 << 9))
         {
             if (IsHost) fromLocation = CardManager.CardLocation.HostHand;
             else fromLocation = CardManager.CardLocation.ClientHand;
@@ -106,9 +84,9 @@ public class PlayerNetwork : NetworkBehaviour
             draggingObject.position = checkHit1.point;
             IsDragging = true;
         }
-        else if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, LayerMask.GetMask("FieldPlane")))
+        else if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, 1 << 8))
         {
-            if (Physics.Raycast(touchRay, out checkHit2, Mathf.Infinity, LayerMask.GetMask("FieldCard")))
+            if (Physics.Raycast(touchRay, out checkHit2, Mathf.Infinity, 1 << 10))
             {
                 Transform obj = checkHit2.transform;
 
@@ -149,7 +127,7 @@ public class PlayerNetwork : NetworkBehaviour
 
         Ray touchRay = playerCamera.ScreenPointToRay(activeFinger.screenPosition);
         RaycastHit checkHit;
-        if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, LayerMask.GetMask("TablePlane")))
+        if (Physics.Raycast(touchRay, out checkHit, Mathf.Infinity, 1 << 3))
         {
             draggingObject.transform.position = checkHit.point;
         }
@@ -204,11 +182,11 @@ public class PlayerNetwork : NetworkBehaviour
         Ray touchRay = playerCamera.ScreenPointToRay(finger.screenPosition);
         RaycastHit checkHit1;
         RaycastHit checkHit2;
-        if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, LayerMask.GetMask("FieldPlane")))
+        if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, 1 << 8))
         {
             toLocation = checkHit1.transform.GetComponent<FieldLocation>().location;
 
-            if (Physics.Raycast(touchRay, out checkHit2, Mathf.Infinity, LayerMask.GetMask("FieldCard"))
+            if (Physics.Raycast(touchRay, out checkHit2, Mathf.Infinity, 1 << 9)
                 && checkHit2.transform != draggingObject.transform)
             {
                 Transform obj = checkHit2.transform;

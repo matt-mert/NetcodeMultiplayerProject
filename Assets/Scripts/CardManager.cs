@@ -154,26 +154,6 @@ public class CardManager : NetworkBehaviour
         {
             FieldCardsList.Add(0);
         }
-
-        // StartCoroutine(HostCardListDebugger());
-    }
-
-    private IEnumerator HostCardListDebugger()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(3);
-            Debug.Log(FieldCardsList[0].ToString() + FieldCardsList[1].ToString()
-                + FieldCardsList[2].ToString() + FieldCardsList[3].ToString() + FieldCardsList[4].ToString()
-                + FieldCardsList[5].ToString() + FieldCardsList[6].ToString() + FieldCardsList[7].ToString()
-                + FieldCardsList[8].ToString() + FieldCardsList[9].ToString() + FieldCardsList[10].ToString()
-                + FieldCardsList[11].ToString() + FieldCardsList[12].ToString() + FieldCardsList[13].ToString()
-                + FieldCardsList[14].ToString() + FieldCardsList[15].ToString());
-            Debug.Log(HostCardsList[0].ToString() + HostCardsList[1].ToString()
-                + HostCardsList[2].ToString() + HostCardsList[3].ToString() + HostCardsList[4].ToString());
-            Debug.Log(ClientCardsList[0].ToString() + ClientCardsList[1].ToString()
-                + ClientCardsList[2].ToString() + ClientCardsList[3].ToString() + ClientCardsList[4].ToString());
-        }
     }
 
     [ServerRpc(RequireOwnership = false)]

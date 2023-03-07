@@ -149,7 +149,6 @@ GameObject:
   - component: {fileID: 3822896192661642548}
   - component: {fileID: 3822896192661642551}
   - component: {fileID: 8946635346693186987}
-  - component: {fileID: 9021813895140976841}
   - component: {fileID: 8909634783621851970}
   m_Layer: 6
   m_Name: NetworkCardArda
@@ -253,26 +252,6 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &9021813895140976841
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3822896192661642547}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5249c191faf1cfb4089d85a41779ec53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cardNameText: {fileID: 3822896193432228577}
-  cardDescText: {fileID: 3822896193467553827}
-  attackText: {fileID: 3822896192332529622}
-  healthText: {fileID: 3822896192727596476}
-  spawnEnergyText: {fileID: 3822896193324029132}
-  moveEnergyText: {fileID: 3822896193389291686}
-  meshRenderer: {fileID: 3822896192661642548}
-  cardSO: {fileID: 11400000, guid: a9ab1427f80143249a75c138254c00c1, type: 2}
 --- !u!114 &8909634783621851970
 MonoBehaviour:
   m_ObjectHideFlags: 0

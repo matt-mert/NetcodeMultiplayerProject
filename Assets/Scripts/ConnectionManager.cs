@@ -20,8 +20,10 @@ public class ConnectionManager : NetworkBehaviour
     [HideInInspector]
     public string joinCode = " ";
 
+    /*
     private Lobby hostLobby;
     private Lobby joinedLobby;
+    */
 
     private void Awake()
     {
@@ -46,6 +48,7 @@ public class ConnectionManager : NetworkBehaviour
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
+    /*
     public async void CreateLobby()
     {
         try
@@ -156,6 +159,7 @@ public class ConnectionManager : NetworkBehaviour
             Debug.LogError(e);
         }
     }
+    */
 
     public async void CreateRelay()
     {
