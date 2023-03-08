@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a2efc1717eb964f4fa5f6785f033fccb, type: 3}
-  m_Name: Data_Mert
+  m_Name: Data_Ocelots
   m_EditorClassIdentifier: 
-  cardId: 2
-  cardName: Mert
-  cardDesc: BigBallz
-  cardMaterial: {fileID: 2100000, guid: d1b8f199f5a1242409e0850998cf529e, type: 2}
-  spawnEnergy: 0
+  cardId: 4
+  cardName: Ocelots
+  cardDesc: Sharp visioned hunters.
+  cardMaterial: {fileID: 2100000, guid: e4e6defa86765a44ab37606e8ee7d0d1, type: 2}
+  spawnEnergy: 2
   moveEnergy: 1
-  cardPower: 1
+  cardPower: 4
   cardHealth: 2
   cardType: 0
-  property: 1
+  property: 0

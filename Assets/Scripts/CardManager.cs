@@ -184,7 +184,9 @@ public class CardManager : NetworkBehaviour
                 Destroy(hostHandObjectsList[index]);
                 hostHandObjectsList[index] = null;
                 ReorderObjectList(1, hostHandObjectsList);
+                isReordering = true;
                 ReorderNetworkList(HostCardsList);
+                isReordering = false;
             }
             else
             {
@@ -252,7 +254,9 @@ public class CardManager : NetworkBehaviour
                 Destroy(genericCardsList[index]);
                 genericCardsList[index] = null;
                 ReorderObjectList(0, genericCardsList);
+                isReordering = true;
                 ReorderNetworkList(ClientCardsList);
+                isReordering = false;
             }
             else
             {
@@ -400,7 +404,9 @@ public class CardManager : NetworkBehaviour
 
     }
 
-    private int FindFirstEmptyIndex(NetworkList<int> list)
+    // Static methods
+
+    private static int FindFirstEmptyIndex(NetworkList<int> list)
     {
         for (int i = 0; i < list.Count; i++)
         {
@@ -410,7 +416,7 @@ public class CardManager : NetworkBehaviour
         return -1;
     }
 
-    private int FindFirstEmptyIndex(List<GameObject> list)
+    private static int FindFirstEmptyIndex(List<GameObject> list)
     {
         for (int i = 0; i < list.Count; i++)
         {
@@ -420,7 +426,7 @@ public class CardManager : NetworkBehaviour
         return -1;
     }
 
-    private Vector3 FindPositionOfIndex(int isHost, int index)
+    private static Vector3 FindPositionOfIndex(int isHost, int index)
     {
         if (isHost == 1)
         {
@@ -442,7 +448,7 @@ public class CardManager : NetworkBehaviour
         }
     }
 
-    private void ReorderObjectList(int isHost, List<GameObject> list)
+    private static void ReorderObjectList(int isHost, List<GameObject> list)
     {
         if (list.Count == 0) return;
 
@@ -462,9 +468,8 @@ public class CardManager : NetworkBehaviour
         }
     }
     
-    private void ReorderNetworkList(NetworkList<int> list)
+    private static void ReorderNetworkList(NetworkList<int> list)
     {
-        isReordering = true;
         bool zeroFound = false;
 
         for (int i = 0; i < list.Count; i++)
@@ -476,7 +481,5 @@ public class CardManager : NetworkBehaviour
             }
             else if (list[i] == 0) zeroFound = true;
         }
-
-        isReordering = false;
     }
 }

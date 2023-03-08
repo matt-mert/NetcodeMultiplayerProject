@@ -4,10 +4,10 @@ using UnityEngine;
 
 public abstract class GenericUnitCard : MonoBehaviour
 {
-    public delegate void TakeDamage(int prev, int next);
-    public event TakeDamage OnTakeDamage;
-    public delegate void GetHealed(int prev, int next);
-    public event GetHealed OnGetHealed;
+    public delegate void IncreaseHealth(int prev, int next);
+    public event IncreaseHealth OnIncreaseHealth;
+    public delegate void DecreaseHealth(int prev, int next);
+    public event DecreaseHealth OnDecreaseHealth;
     public delegate void IncreaseAttack(int prev, int next);
     public event IncreaseAttack OnIncreaseAttack;
     public delegate void DecreaseAttack(int prev, int next);
@@ -40,18 +40,18 @@ public abstract class GenericUnitCard : MonoBehaviour
         moveEnergy = cardSO.moveEnergy;
     }
 
-    public virtual void TakeDamageClientRpc(int amount)
-    {
-        int prev = health;
-        health -= amount;
-        if (OnTakeDamage != null) OnTakeDamage.Invoke(prev, health);
-    }
-
-    public virtual void GetHealedClientRpc(int amount)
+    public virtual void IncreaseHealthClientRpc(int amount)
     {
         int prev = health;
         health += amount;
-        if (OnGetHealed != null) OnGetHealed.Invoke(prev, health);
+        if (OnIncreaseHealth != null) OnIncreaseHealth.Invoke(prev, health);
+    }
+
+    public virtual void DecreaseHealthClientRpc(int amount)
+    {
+        int prev = health;
+        health -= amount;
+        if (OnDecreaseHealth != null) OnDecreaseHealth.Invoke(prev, health);
     }
 
     public virtual void IncreaseAttackClientRpc(int amount)

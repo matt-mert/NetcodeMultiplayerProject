@@ -21,4 +21,4 @@ MonoBehaviour:
   cardPower: 5
   cardHealth: 5
   cardType: 0
-  property: 2
+  property: 0
