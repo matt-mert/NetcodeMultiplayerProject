@@ -18,10 +18,14 @@ public class GameStates : NetworkBehaviour
     public event StateChangedToHost1 OnStateChangedToHost1;
     public delegate void StateChangedToHost2();
     public event StateChangedToHost2 OnStateChangedToHost2;
+    public delegate void StateChangedToHost3();
+    public event StateChangedToHost3 OnStateChangedToHost3;
     public delegate void StateChangedToClient1();
     public event StateChangedToClient1 OnStateChangedToClient1;
     public delegate void StateChangedToClient2();
     public event StateChangedToClient2 OnStateChangedToClient2;
+    public delegate void StateChangedToClient3();
+    public event StateChangedToClient3 OnStateChangedToClient3;
     public delegate void StateChangedToEnd();
     public event StateChangedToEnd OnStateChangedToEnd;
     public delegate void StateChangedToLoading();
@@ -34,8 +38,10 @@ public class GameStates : NetworkBehaviour
         start,
         host1,
         host2,
+        host3,
         client1,
         client2,
+        client3,
         end,
         loading,
     }
@@ -113,6 +119,14 @@ public class GameStates : NetworkBehaviour
     }
 
     [ClientRpc]
+    public void ChangeStateToHost3ClientRpc()
+    {
+        Debug.Log("Changing state to Host3...");
+        currentState.Value = GameState.host3;
+        if (OnStateChangedToHost3 != null) OnStateChangedToHost3.Invoke();
+    }
+
+    [ClientRpc]
     public void ChangeStateToClient1ClientRpc()
     {
         Debug.Log("Changing state to Client1...");
@@ -128,6 +142,14 @@ public class GameStates : NetworkBehaviour
         Debug.Log("Changing state to Client2...");
         currentState.Value = GameState.client2;
         if (OnStateChangedToClient2 != null) OnStateChangedToClient2.Invoke();
+    }
+
+    [ClientRpc]
+    public void ChangeStateToClient3ClientRpc()
+    {
+        Debug.Log("Changing state to Client3...");
+        currentState.Value = GameState.client3;
+        if (OnStateChangedToClient3 != null) OnStateChangedToClient3.Invoke();
     }
 
     [ClientRpc]

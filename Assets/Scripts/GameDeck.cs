@@ -8,4 +8,5 @@ public class GameDeck : ScriptableObject
     public string deckName;
     [SerializeField]
     public GameCard[] deck;
+    public GameCard headquarters;
 }
