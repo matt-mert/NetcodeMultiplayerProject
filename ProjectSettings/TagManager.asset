@@ -15,11 +15,11 @@ TagManager:
   - TablePlane
   - Water
   - UI
-  - HostCard
-  - ClientCard
+  - Movable
   - FieldPlane
-  - PlayerCard
-  - FieldCard
+  - 
+  - 
+  - 
   - 
   - 
   - 

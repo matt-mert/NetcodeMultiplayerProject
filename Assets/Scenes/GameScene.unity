@@ -537,7 +537,7 @@ GameObject:
   - component: {fileID: 492833465}
   - component: {fileID: 492833464}
   - component: {fileID: 492833467}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: FarNorth3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -648,7 +648,7 @@ GameObject:
   - component: {fileID: 511530850}
   - component: {fileID: 511530849}
   - component: {fileID: 511530852}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: MidSouth3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1269,7 +1269,7 @@ GameObject:
   - component: {fileID: 788676978}
   - component: {fileID: 788676977}
   - component: {fileID: 788676980}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: FarNorth2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1773,7 +1773,7 @@ GameObject:
   - component: {fileID: 955505862}
   - component: {fileID: 955505861}
   - component: {fileID: 955505864}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: MidSide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2043,7 +2043,7 @@ GameObject:
   - component: {fileID: 972446643}
   - component: {fileID: 972446642}
   - component: {fileID: 972446645}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: SouthBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2282,7 +2282,7 @@ GameObject:
   - component: {fileID: 1110362629}
   - component: {fileID: 1110362628}
   - component: {fileID: 1110362631}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: MidNorth2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2440,8 +2440,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Player2
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9c045c23abf6f364ebd4d83bf23382aa, type: 2}
+  m_sharedMaterial: {fileID: -990476421012153280, guid: 9c045c23abf6f364ebd4d83bf23382aa,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2567,7 +2568,7 @@ GameObject:
   - component: {fileID: 1202401639}
   - component: {fileID: 1202401638}
   - component: {fileID: 1202401641}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: MidSouth1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2725,8 +2726,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: '#3'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9c045c23abf6f364ebd4d83bf23382aa, type: 2}
+  m_sharedMaterial: {fileID: -990476421012153280, guid: 9c045c23abf6f364ebd4d83bf23382aa,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3404,7 +3406,7 @@ GameObject:
   - component: {fileID: 1420211204}
   - component: {fileID: 1420211203}
   - component: {fileID: 1420211206}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: FarNorth1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3782,7 +3784,7 @@ GameObject:
   - component: {fileID: 1602641665}
   - component: {fileID: 1602641664}
   - component: {fileID: 1602641667}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: MidNorth3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4196,8 +4198,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: '#2'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9c045c23abf6f364ebd4d83bf23382aa, type: 2}
+  m_sharedMaterial: {fileID: -990476421012153280, guid: 9c045c23abf6f364ebd4d83bf23382aa,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4414,8 +4417,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Player1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9c045c23abf6f364ebd4d83bf23382aa, type: 2}
+  m_sharedMaterial: {fileID: -990476421012153280, guid: 9c045c23abf6f364ebd4d83bf23382aa,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4580,7 +4584,7 @@ GameObject:
   - component: {fileID: 1851963316}
   - component: {fileID: 1851963315}
   - component: {fileID: 1851963318}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: NorthBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4857,7 +4861,7 @@ GameObject:
   - component: {fileID: 1944161219}
   - component: {fileID: 1944161218}
   - component: {fileID: 1944161221}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: MidSouth2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5114,7 +5118,7 @@ GameObject:
   - component: {fileID: 2140860948}
   - component: {fileID: 2140860947}
   - component: {fileID: 2140860950}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: MidNorth1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5248,7 +5252,7 @@ GameObject:
   - component: {fileID: 1112245661424745295}
   - component: {fileID: 1112245661424745294}
   - component: {fileID: 1112245661424745296}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: FarSouth3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5401,7 +5405,7 @@ GameObject:
   - component: {fileID: 1112245661928095020}
   - component: {fileID: 1112245661928095027}
   - component: {fileID: 1112245661928095028}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: FarSouth2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5470,7 +5474,7 @@ GameObject:
   - component: {fileID: 1112245662081005495}
   - component: {fileID: 1112245662081005494}
   - component: {fileID: 1112245662081005496}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: FarSouth1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -2,6 +2,8 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
+using NotEnoughCheddar.Networking;
 
 // Written by https://github.com/matt-mert
 
@@ -20,15 +22,27 @@ public class NetworkManagerUI : MonoBehaviour
     {
         createRelayButton.onClick.AddListener(() =>
         {
-            ConnectionManager.Instance.CreateRelay();
+            CreateRelayAsyncButton().Forget();
         });
         joinRelayButton.onClick.AddListener(() =>
         {
-            string str = inputField.text;
-            ConnectionManager.Instance.JoinRelay(str);
+            JoinRelayAsyncButton().Forget();
         });
 
         NetworkManager.Singleton.OnServerStarted += ApplyCodeToText;
+    }
+
+    private async UniTaskVoid CreateRelayAsyncButton()
+    {
+        await UniTask.Delay(2000);
+        await ConnectionManager.Instance.CreateRelayAsync();
+    }
+
+    private async UniTaskVoid JoinRelayAsyncButton()
+    {
+        await UniTask.Delay(2000);
+        string str = inputField.text;
+        await ConnectionManager.Instance.JoinRelayAsync(str);
     }
 
     private void ApplyCodeToText()

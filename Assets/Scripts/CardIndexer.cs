@@ -4,15 +4,26 @@ using UnityEngine;
 
 public class CardIndexer : MonoBehaviour
 {
-    private int cardIndex;
+    private int cardHandIndex;
+    private int cardFieldIndex;
 
-    public int GetIndex()
+    public int GetHandIndex()
     {
-        return cardIndex;
+        return cardHandIndex;
     }
 
-    public void SetIndex(int value)
+    public void SetHandIndex(int value)
     {
-        cardIndex = value;
+        cardHandIndex = value;
+    }
+
+    public int GetFieldIndex()
+    {
+        return cardFieldIndex;
+    }
+
+    public void SetFieldIndex(int value)
+    {
+        cardFieldIndex = value;
     }
 }

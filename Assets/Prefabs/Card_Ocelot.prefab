@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3822896192332529621}
   - component: {fileID: 3822896192332529623}
   - component: {fileID: 3822896192332529622}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 3822896192661642551}
   - component: {fileID: -6326525280257850815}
   - component: {fileID: -8375491140337606962}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Card_Ocelot
   m_TagString: HandCard
   m_Icon: {fileID: 0}
@@ -200,7 +200,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 671326abbb657804eaa226dbf5f6669e, type: 2}
+  - {fileID: 2100000, guid: e4e6defa86765a44ab37606e8ee7d0d1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -287,7 +287,7 @@ GameObject:
   - component: {fileID: 3822896192727596475}
   - component: {fileID: 3822896192727596477}
   - component: {fileID: 3822896192727596476}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Health
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -422,7 +422,7 @@ GameObject:
   - component: {fileID: 3822896193324029131}
   - component: {fileID: 3822896193324029133}
   - component: {fileID: 3822896193324029132}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: SpawnE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -557,7 +557,7 @@ GameObject:
   - component: {fileID: 3822896193389291685}
   - component: {fileID: 3822896193389291687}
   - component: {fileID: 3822896193389291686}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: MoveE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -692,7 +692,7 @@ GameObject:
   - component: {fileID: 3822896193432228576}
   - component: {fileID: 3822896193432228578}
   - component: {fileID: 3822896193432228577}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -827,7 +827,7 @@ GameObject:
   - component: {fileID: 3822896193467553826}
   - component: {fileID: 3822896193467553828}
   - component: {fileID: 3822896193467553827}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Desc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -963,7 +963,7 @@ GameObject:
   - component: {fileID: 3822896194016500437}
   - component: {fileID: 3822896194016500436}
   - component: {fileID: 3822896194016500435}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}

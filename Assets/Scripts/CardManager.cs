@@ -206,11 +206,12 @@ public class CardManager : NetworkBehaviour
             int index = FindFirstEmptyIndex(HostCardsList);
             Vector3 pos = FindPositionOfIndex(1, index);
             GameObject spawnedCard = Instantiate(exampleHandCard, pos, rotation);
+            spawnedCard.tag = "HandCard";
             hostHandObjectsList[index] = spawnedCard;
             CardHandler cardHandler = spawnedCard.GetComponent<CardHandler>();
             CardIndexer cardIndexer = spawnedCard.GetComponent<CardIndexer>();
             cardHandler.cardSO = gameCardSO;
-            cardIndexer.SetIndex(index);
+            cardIndexer.SetHandIndex(index);
             InsertHostListServerRpc(index, cardHandler.cardId);
         }
         else
@@ -219,7 +220,7 @@ public class CardManager : NetworkBehaviour
             Vector3 pos = FindPositionOfIndex(1, index);
             GameObject generic = Instantiate(genericCard, pos, rotation);
             CardIndexer cardIndexer = generic.GetComponent<CardIndexer>();
-            cardIndexer.SetIndex(index);
+            cardIndexer.SetHandIndex(index);
             if (index != -1) genericCardsList[index] = generic;
         }
     }
@@ -277,7 +278,7 @@ public class CardManager : NetworkBehaviour
             Vector3 pos = FindPositionOfIndex(0, index);
             GameObject generic = Instantiate(genericCard, pos, rotation);
             CardIndexer cardIndexer = generic.GetComponent<CardIndexer>();
-            cardIndexer.SetIndex(index);
+            cardIndexer.SetHandIndex(index);
             if (index != -1) genericCardsList[index] = generic;
         }
         else
@@ -285,11 +286,12 @@ public class CardManager : NetworkBehaviour
             int index = FindFirstEmptyIndex(ClientCardsList);
             Vector3 pos = FindPositionOfIndex(0, index);
             GameObject spawnedCard = Instantiate(exampleHandCard, pos, rotation);
+            spawnedCard.tag = "HandCard";
             clientHandObjectsList[index] = spawnedCard;
             CardHandler cardHandler = spawnedCard.GetComponent<CardHandler>();
             CardIndexer cardIndexer = spawnedCard.GetComponent<CardIndexer>();
             cardHandler.cardSO = gameCardSO;
-            cardIndexer.SetIndex(index);
+            cardIndexer.SetHandIndex(index);
             InsertClientListServerRpc(index, cardHandler.cardId);
         }
     }
@@ -340,6 +342,7 @@ public class CardManager : NetworkBehaviour
             Vector3 hostPosition = dictionary[location];
             Quaternion hostRotation = Quaternion.Euler(new Vector3(-90f, 90f, 0f));
             GameObject spawned = Instantiate(exampleCard, hostPosition, hostRotation);
+            spawned.GetComponent<CardIndexer>().SetFieldIndex(index);
             spawned.tag = "HostCard";
             fieldHostObjectsList[index] = spawned;
         }
@@ -349,6 +352,7 @@ public class CardManager : NetworkBehaviour
             Vector3 clientPosition = dictionary[location];
             Quaternion clientRotation = Quaternion.Euler(new Vector3(-90f, -90f, 0f));
             GameObject spawned = Instantiate(exampleCard, clientPosition, clientRotation);
+            spawned.GetComponent<CardIndexer>().SetFieldIndex(index);
             spawned.tag = "HostCard";
             fieldHostObjectsList[index] = spawned;
         }
@@ -363,6 +367,7 @@ public class CardManager : NetworkBehaviour
             Vector3 hostPosition = dictionary[location];
             Quaternion hostRotation = Quaternion.Euler(new Vector3(-90f, 90f, 0f));
             GameObject spawned = Instantiate(exampleCard, hostPosition, hostRotation);
+            spawned.GetComponent<CardIndexer>().SetFieldIndex(index);
             spawned.tag = "ClientCard";
             fieldClientObjectsList[index] = spawned;
         }
@@ -372,6 +377,7 @@ public class CardManager : NetworkBehaviour
             Vector3 clientPosition = dictionary[location];
             Quaternion clientRotation = Quaternion.Euler(new Vector3(-90f, -90f, 0f));
             GameObject spawned = Instantiate(exampleCard, clientPosition, clientRotation);
+            spawned.GetComponent<CardIndexer>().SetFieldIndex(index);
             spawned.tag = "ClientCard";
             fieldClientObjectsList[index] = spawned;
         }
@@ -461,7 +467,9 @@ public class CardManager : NetworkBehaviour
                 Vector3 pos = FindPositionOfIndex(isHost, i - 1);
                 list[i - 1] = list[i];
                 list[i - 1].transform.position = pos;
-                list[i - 1].GetComponent<CardIndexer>().SetIndex(i - 1);
+                CardIndexer indexer = list[i - 1].GetComponent<CardIndexer>();
+                if (list[i - 1].CompareTag("HandCard")) indexer.SetHandIndex(i - 1);
+                else indexer.SetFieldIndex(i - 1);
                 list[i] = null;
             }
             else if (list[i] == null) nullFound = true;

@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "R68TC02VXRR",
         "name": "com.NotEnoughCheddar.CardGame3D",
-        "processId": 12512,
+        "processId": 30219,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -24,6 +24,24 @@
             "deviceId": "R68TC02VXRR",
             "name": "com.NotEnoughCheddar.CardGame3D",
             "processId": 12512,
+            "exited": true
+        },
+        {
+            "deviceId": "R68TC02VXRR",
+            "name": "com.NotEnoughCheddar.CardGame3D",
+            "processId": 24672,
+            "exited": true
+        },
+        {
+            "deviceId": "R68TC02VXRR",
+            "name": "com.NotEnoughCheddar.CardGame3D",
+            "processId": 28210,
+            "exited": true
+        },
+        {
+            "deviceId": "R68TC02VXRR",
+            "name": "com.NotEnoughCheddar.CardGame3D",
+            "processId": 30219,
             "exited": false
         }
     ],

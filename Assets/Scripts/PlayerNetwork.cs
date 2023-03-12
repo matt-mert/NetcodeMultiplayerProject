@@ -71,47 +71,43 @@ public class PlayerNetwork : NetworkBehaviour
 
         Ray touchRay = playerCamera.ScreenPointToRay(activeFinger.screenPosition);
         RaycastHit checkHit1;
-        RaycastHit checkHit2;
-        if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, 1 << 9))
+        if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, 1 << 6))
         {
-            if (IsHost) fromLocation = CardManager.CardLocation.HostHand;
-            else fromLocation = CardManager.CardLocation.ClientHand;
-
-            draggingObject = checkHit1.transform;
-            startPosition = draggingObject.position;
-            startScale = draggingObject.localScale;
-            draggingObject.localScale = startScale * 2f;
-            draggingObject.position = checkHit1.point;
-            IsDragging = true;
-        }
-        else if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, 1 << 8))
-        {
-            if (Physics.Raycast(touchRay, out checkHit2, Mathf.Infinity, 1 << 10))
+            if (checkHit1.transform.CompareTag("HandCard"))
             {
-                Transform obj = checkHit2.transform;
+                if (IsHost) fromLocation = CardManager.CardLocation.HostHand;
+                else fromLocation = CardManager.CardLocation.ClientHand;
 
-                if (obj.CompareTag("HostCard") && IsHost)
-                {
-                    fromLocation = checkHit1.transform.GetComponent<FieldLocation>().location;
+                draggingObject = checkHit1.transform;
+                startPosition = draggingObject.position;
+                startScale = draggingObject.localScale;
+                draggingObject.localScale = startScale * 2f;
+                draggingObject.position = checkHit1.point;
+                IsDragging = true;
+            }
+            else if (checkHit1.transform.CompareTag("HostCard") && IsHost)
+            {
+                draggingObject = checkHit1.transform;
+                CardIndexer indexer = draggingObject.GetComponent<CardIndexer>();
+                fromLocation = (CardManager.CardLocation)indexer.GetFieldIndex();
 
-                    draggingObject = obj;
-                    startPosition = draggingObject.position;
-                    startScale = draggingObject.localScale;
-                    draggingObject.localScale = startScale * 2f;
-                    draggingObject.position = checkHit2.point;
-                    IsDragging = true;
-                }
-                else if (obj.CompareTag("ClientCard") && !IsHost)
-                {
-                    fromLocation = checkHit1.transform.GetComponent<FieldLocation>().location;
+                startPosition = draggingObject.position;
+                startScale = draggingObject.localScale;
+                draggingObject.localScale = startScale * 2f;
+                draggingObject.position = checkHit1.point;
+                IsDragging = true;
+            }
+            else if (checkHit1.transform.CompareTag("ClientCard") && !IsHost)
+            {
+                draggingObject = checkHit1.transform;
+                CardIndexer indexer = draggingObject.GetComponent<CardIndexer>();
+                fromLocation = (CardManager.CardLocation)indexer.GetFieldIndex();
 
-                    draggingObject = obj;
-                    startPosition = draggingObject.position;
-                    startScale = draggingObject.localScale;
-                    draggingObject.localScale = startScale * 2f;
-                    draggingObject.position = checkHit2.point;
-                    IsDragging = true;
-                }
+                startPosition = draggingObject.position;
+                startScale = draggingObject.localScale;
+                draggingObject.localScale = startScale * 2f;
+                draggingObject.position = checkHit1.point;
+                IsDragging = true;
             }
         }
     }
@@ -154,19 +150,8 @@ public class PlayerNetwork : NetworkBehaviour
         activeFinger = finger;
         if (activeFinger.index > 0) return;
 
-        if (IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.host2)
-        {
-            fromLocation = CardManager.CardLocation.Default;
-            toLocation = CardManager.CardLocation.Default;
-
-            draggingObject.position = startPosition;
-            draggingObject.localScale = startScale;
-            activeFinger = null;
-            draggingObject = null;
-            IsDragging = false;
-            return;
-        }
-        if (!IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.client2)
+        if ((IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.host2) ||
+            (!IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.client2))
         {
             fromLocation = CardManager.CardLocation.Default;
             toLocation = CardManager.CardLocation.Default;
@@ -182,14 +167,16 @@ public class PlayerNetwork : NetworkBehaviour
         Ray touchRay = playerCamera.ScreenPointToRay(finger.screenPosition);
         RaycastHit checkHit1;
         RaycastHit checkHit2;
-        if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, 1 << 8))
+        if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, 1 << 7))
         {
             toLocation = checkHit1.transform.GetComponent<FieldLocation>().location;
 
-            if (Physics.Raycast(touchRay, out checkHit2, Mathf.Infinity, 1 << 9)
+            if (Physics.Raycast(touchRay, out checkHit2, Mathf.Infinity, 1 << 6)
                 && checkHit2.transform != draggingObject.transform)
             {
                 Transform obj = checkHit2.transform;
+
+                Debug.Log("Not yet implemented.");
 
                 if (obj.CompareTag("HostCard"))
                 {
@@ -202,14 +189,26 @@ public class PlayerNetwork : NetworkBehaviour
             }
             else
             {
-                if (fromLocation == CardManager.CardLocation.HostHand)
+                if (fromLocation == toLocation)
+                {
+                    fromLocation = CardManager.CardLocation.Default;
+                    toLocation = CardManager.CardLocation.Default;
+
+                    draggingObject.position = startPosition;
+                    draggingObject.localScale = startScale;
+                    activeFinger = null;
+                    draggingObject = null;
+                    IsDragging = false;
+                    return;
+                }
+                else if (fromLocation == CardManager.CardLocation.HostHand)
                 {
                     toLocation = checkHit1.transform.GetComponent<FieldLocation>().location;
                     CardHandler cardHandler = draggingObject.GetComponent<CardHandler>();
                     CardIndexer cardIndexer = draggingObject.GetComponent<CardIndexer>();
                     int cardId = cardHandler.cardId;
                     CardManager.Instance.InsertFieldListServerRpc((int)toLocation, cardId);
-                    CardManager.Instance.RemoveHostListServerRpc(cardIndexer.GetIndex());
+                    CardManager.Instance.RemoveHostListServerRpc(cardIndexer.GetHandIndex());
                     Debug.Log("from " + fromLocation + " to " + toLocation);
 
                     fromLocation = CardManager.CardLocation.Default;
@@ -227,24 +226,12 @@ public class PlayerNetwork : NetworkBehaviour
                     CardIndexer cardIndexer = draggingObject.GetComponent<CardIndexer>();
                     int cardId = cardHandler.cardId;
                     CardManager.Instance.InsertFieldListServerRpc((int)toLocation, cardId);
-                    CardManager.Instance.RemoveClientListServerRpc(cardIndexer.GetIndex());
+                    CardManager.Instance.RemoveClientListServerRpc(cardIndexer.GetHandIndex());
                     Debug.Log("from " + fromLocation + " to " + toLocation);
 
                     fromLocation = CardManager.CardLocation.Default;
                     toLocation = CardManager.CardLocation.Default;
 
-                    activeFinger = null;
-                    draggingObject = null;
-                    IsDragging = false;
-                    return;
-                }
-                else if (fromLocation == toLocation)
-                {
-                    fromLocation = CardManager.CardLocation.Default;
-                    toLocation = CardManager.CardLocation.Default;
-
-                    draggingObject.position = startPosition;
-                    draggingObject.localScale = startScale;
                     activeFinger = null;
                     draggingObject = null;
                     IsDragging = false;
