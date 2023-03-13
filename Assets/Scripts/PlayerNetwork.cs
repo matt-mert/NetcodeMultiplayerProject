@@ -167,24 +167,53 @@ public class PlayerNetwork : NetworkBehaviour
         Ray touchRay = playerCamera.ScreenPointToRay(finger.screenPosition);
         RaycastHit checkHit1;
         RaycastHit[] checkHit2;
-        // Checking if there is a field plane
+
         if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, 1 << 7))
         {
             toLocation = checkHit1.transform.GetComponent<FieldLocation>().location;
             checkHit2 = Physics.RaycastAll(touchRay, Mathf.Infinity, 1 << 6);
 
-            // Checking if there is a movable object and it is not the draggingObject
             if (checkHit2.Length > 1)
             {
                 Transform obj = checkHit2[1].transform;
 
-                if (obj.CompareTag("HostCard"))
+                // Move validation logic could be here?
+
+                if (obj.CompareTag("HostCard") && IsHost)
+                {
+                    // Subject to change
+
+                    fromLocation = CardManager.CardLocation.Default;
+                    toLocation = CardManager.CardLocation.Default;
+
+                    draggingObject.position = startPosition;
+                    draggingObject.localScale = startScale;
+                    activeFinger = null;
+                    draggingObject = null;
+                    IsDragging = false;
+                    return;
+                }
+                else if (obj.CompareTag("HostCard") && !IsHost)
                 {
 
                 }
-                else if (obj.CompareTag("ClientCard"))
+                else if (obj.CompareTag("ClientCard") && IsHost)
                 {
+                    
+                }
+                else if (obj.CompareTag("ClientCard") && !IsHost)
+                {
+                    // Subject to change
 
+                    fromLocation = CardManager.CardLocation.Default;
+                    toLocation = CardManager.CardLocation.Default;
+
+                    draggingObject.position = startPosition;
+                    draggingObject.localScale = startScale;
+                    activeFinger = null;
+                    draggingObject = null;
+                    IsDragging = false;
+                    return;
                 }
             }
             else
