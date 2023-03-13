@@ -166,17 +166,17 @@ public class PlayerNetwork : NetworkBehaviour
 
         Ray touchRay = playerCamera.ScreenPointToRay(finger.screenPosition);
         RaycastHit checkHit1;
-        RaycastHit checkHit2;
+        RaycastHit[] checkHit2;
+        // Checking if there is a field plane
         if (Physics.Raycast(touchRay, out checkHit1, Mathf.Infinity, 1 << 7))
         {
             toLocation = checkHit1.transform.GetComponent<FieldLocation>().location;
+            checkHit2 = Physics.RaycastAll(touchRay, Mathf.Infinity, 1 << 6);
 
-            if (Physics.Raycast(touchRay, out checkHit2, Mathf.Infinity, 1 << 6)
-                && checkHit2.transform != draggingObject.transform)
+            // Checking if there is a movable object and it is not the draggingObject
+            if (checkHit2.Length > 1)
             {
-                Transform obj = checkHit2.transform;
-
-                Debug.Log("Not yet implemented.");
+                Transform obj = checkHit2[1].transform;
 
                 if (obj.CompareTag("HostCard"))
                 {
