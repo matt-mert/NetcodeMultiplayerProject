@@ -162,7 +162,7 @@ namespace NotEnoughCheddar.Networking
 
             if (NetworkManager.Singleton.ConnectedClientsList.Count == 2)
             {
-                GameStates.Instance.ChangeStateToInitialClientRpc();
+                StatesManager.Instance.ChangeStateToInitialClientRpc();
             }
         }
 

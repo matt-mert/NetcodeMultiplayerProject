@@ -12,12 +12,13 @@ public class PlayerNetwork : NetworkBehaviour
     [HideInInspector]
     public bool IsDragging;
 
-    private PlayerInput playerInput = null;
-    private Camera playerCamera = null;
-    private Transform draggingObject = null;
-    private Vector3 startPosition = Vector3.zero;
-    private Vector3 startScale = Vector3.zero;
-    private Finger activeFinger = null;
+    private PlayerInput playerInput;
+    private InputAction endTurnAction;
+    private Camera playerCamera;
+    private Transform draggingObject;
+    private Vector3 startPosition;
+    private Vector3 startScale;
+    private Finger activeFinger;
 
     private CardManager.CardLocation fromLocation;
     private CardManager.CardLocation toLocation;
@@ -33,6 +34,8 @@ public class PlayerNetwork : NetworkBehaviour
         EnhancedTouchSupport.Enable();
         playerCamera = Camera.main;
         playerInput = GetComponent<PlayerInput>();
+        endTurnAction = playerInput.actions["EndTurn"];
+        endTurnAction.started += ctx => PlayerEndTurn();
 
         NetworkManager.Singleton.SceneManager.OnLoadComplete += OnSceneChanged;
         Touch.onFingerDown += FingerDown;
@@ -150,8 +153,8 @@ public class PlayerNetwork : NetworkBehaviour
         activeFinger = finger;
         if (activeFinger.index > 0) return;
 
-        if ((IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.host2) ||
-            (!IsHost && GameStates.Instance.currentState.Value != GameStates.GameState.client2))
+        if ((IsHost && StatesManager.Instance.currentState.Value != StatesManager.GameState.host2) ||
+            (!IsHost && StatesManager.Instance.currentState.Value != StatesManager.GameState.client2))
         {
             fromLocation = CardManager.CardLocation.Default;
             toLocation = CardManager.CardLocation.Default;
@@ -300,39 +303,59 @@ public class PlayerNetwork : NetworkBehaviour
         }
     }
 
+    private void PlayerEndTurn()
+    {
+        if (IsHost && StatesManager.Instance.currentState.Value == StatesManager.GameState.host2)
+        {
+            FlowManager.Instance.EndHostTurnServerRpc();
+        }
+        else if (!IsHost && StatesManager.Instance.currentState.Value == StatesManager.GameState.client2)
+        {
+            FlowManager.Instance.EndClientTurnServerRpc();
+        }
+    }
+
     // Debug
 
     private void ToggleCode()
     {
         if (!IsHost) return;
 
-        if (GameStates.Instance.currentState.Value == GameStates.GameState.menu)
+        if (StatesManager.Instance.currentState.Value == StatesManager.GameState.menu)
         {
-            GameStates.Instance.ChangeStateToInitialClientRpc();
+            StatesManager.Instance.ChangeStateToInitialClientRpc();
         }
-        else if (GameStates.Instance.currentState.Value == GameStates.GameState.initial)
+        else if (StatesManager.Instance.currentState.Value == StatesManager.GameState.initial)
         {
-            GameStates.Instance.ChangeStateToStartClientRpc();
+            StatesManager.Instance.ChangeStateToStartClientRpc();
         }
-        else if (GameStates.Instance.currentState.Value == GameStates.GameState.start)
+        else if (StatesManager.Instance.currentState.Value == StatesManager.GameState.start)
         {
-            GameStates.Instance.ChangeStateToHost1ClientRpc();
+            StatesManager.Instance.ChangeStateToHost1ClientRpc();
         }
-        else if (GameStates.Instance.currentState.Value == GameStates.GameState.host1)
+        else if (StatesManager.Instance.currentState.Value == StatesManager.GameState.host1)
         {
-            GameStates.Instance.ChangeStateToHost2ClientRpc();
+            StatesManager.Instance.ChangeStateToHost2ClientRpc();
         }
-        else if (GameStates.Instance.currentState.Value == GameStates.GameState.host2)
+        else if (StatesManager.Instance.currentState.Value == StatesManager.GameState.host2)
         {
-            GameStates.Instance.ChangeStateToClient1ClientRpc();
+            StatesManager.Instance.ChangeStateToHost3ClientRpc();
         }
-        else if (GameStates.Instance.currentState.Value == GameStates.GameState.client1)
+        else if (StatesManager.Instance.currentState.Value == StatesManager.GameState.host3)
         {
-            GameStates.Instance.ChangeStateToClient2ClientRpc();
+            StatesManager.Instance.ChangeStateToClient1ClientRpc();
         }
-        else if (GameStates.Instance.currentState.Value == GameStates.GameState.client2)
+        else if (StatesManager.Instance.currentState.Value == StatesManager.GameState.client1)
         {
-            GameStates.Instance.ChangeStateToHost1ClientRpc();
+            StatesManager.Instance.ChangeStateToClient2ClientRpc();
+        }
+        else if (StatesManager.Instance.currentState.Value == StatesManager.GameState.client2)
+        {
+            StatesManager.Instance.ChangeStateToClient3ClientRpc();
+        }
+        else if (StatesManager.Instance.currentState.Value == StatesManager.GameState.client3)
+        {
+            StatesManager.Instance.ChangeStateToHost1ClientRpc();
         }
     }
 

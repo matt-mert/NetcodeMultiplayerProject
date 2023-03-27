@@ -87,7 +87,7 @@ public class CardManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         NetworkManager.Singleton.SceneManager.OnLoadComplete += OnSceneChanged;
-        GameStates.Instance.OnStateChangedToStart += InitializeLocationsClientRpc;
+        StatesManager.Instance.OnStateChangedToStart += InitializationsClientRpc;
         HostCardsList.OnListChanged += HostHandListListener;
         ClientCardsList.OnListChanged += ClientHandListListener;
         FieldCardsList.OnListChanged += FieldCardListListener;
@@ -100,7 +100,7 @@ public class CardManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void InitializeLocationsClientRpc()
+    private void InitializationsClientRpc()
     {
         Vector3 elevate = new Vector3(0f, 0.2f, 0f);
         FieldLocation[] fieldLocations = FindObjectsOfType<FieldLocation>();
@@ -174,7 +174,7 @@ public class CardManager : NetworkBehaviour
     [ClientRpc]
     private void AfterHostPlayedClientRpc(int value, int index)
     {
-        if (GameStates.Instance.currentState.Value != GameStates.GameState.host2)
+        if (StatesManager.Instance.currentState.Value != StatesManager.GameState.host2)
             return;
 
         if (value == 0 && !isReordering)
@@ -245,7 +245,7 @@ public class CardManager : NetworkBehaviour
     [ClientRpc]
     private void AfterClientPlayedClientRpc(int value, int index)
     {
-        if (GameStates.Instance.currentState.Value != GameStates.GameState.client2)
+        if (StatesManager.Instance.currentState.Value != StatesManager.GameState.client2)
             return;
 
         if (value == 0 && !isReordering)
@@ -310,8 +310,8 @@ public class CardManager : NetworkBehaviour
 
     private void FieldCardListListener(NetworkListEvent<int> change)
     {
-        if (GameStates.Instance.currentState.Value != GameStates.GameState.host2 &&
-            GameStates.Instance.currentState.Value != GameStates.GameState.client2)
+        if (StatesManager.Instance.currentState.Value != StatesManager.GameState.host2 &&
+            StatesManager.Instance.currentState.Value != StatesManager.GameState.client2)
             return;
 
         if (!IsServer) return;
@@ -322,11 +322,11 @@ public class CardManager : NetworkBehaviour
         }
         else if (change.PreviousValue == 0)
         {
-            if (GameStates.Instance.currentState.Value == GameStates.GameState.host2)
+            if (StatesManager.Instance.currentState.Value == StatesManager.GameState.host2)
             {
                 SpawnHostCardClientRpc(change.Index, 1);
             }
-            else if (GameStates.Instance.currentState.Value == GameStates.GameState.client2)
+            else if (StatesManager.Instance.currentState.Value == StatesManager.GameState.client2)
             {
                 SpawnClientCardClientRpc(change.Index, 1);
             }

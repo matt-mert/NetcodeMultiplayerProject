@@ -4,9 +4,9 @@ using UnityEngine.SceneManagement;
 
 // Written by https://github.com/matt-mert
 
-public class GameStates : NetworkBehaviour
+public class StatesManager : NetworkBehaviour
 {
-    public static GameStates Instance { get; private set; }
+    public static StatesManager Instance { get; private set; }
 
     public delegate void StateChangedToMenu();
     public event StateChangedToMenu OnStateChangedToMenu;
@@ -46,6 +46,7 @@ public class GameStates : NetworkBehaviour
         loading,
     }
 
+    [HideInInspector]
     public NetworkVariable<GameState> currentState;
 
     private void Awake()
@@ -70,15 +71,18 @@ public class GameStates : NetworkBehaviour
     private void OnSceneChanged(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
     {
         if (!IsOwner) return;
-
     }
 
     [ClientRpc]
     public void ChangeStateToMenuClientRpc()
     {
         Debug.Log("Changing state to menu...");
-        NetworkManager.Singleton.SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
-        currentState.Value = GameState.menu;
+        if (IsHost)
+        {
+            currentState.Value = GameState.menu;
+            NetworkManager.Singleton.SceneManager.LoadScene("MenuScene", LoadSceneMode.Single);
+        }
+        else Camera.main.transform.Rotate(new Vector3(0f, 0f, -180f));
         if (OnStateChangedToMenu != null) OnStateChangedToMenu.Invoke();
     }
 
@@ -86,17 +90,20 @@ public class GameStates : NetworkBehaviour
     public void ChangeStateToInitialClientRpc()
     {
         Debug.Log("Changing state to initial...");
-        NetworkManager.Singleton.SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
-        currentState.Value = GameState.initial;
+        if (IsHost)
+        {
+            currentState.Value = GameState.initial;
+            NetworkManager.Singleton.SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
+        }
+        else Camera.main.transform.Rotate(new Vector3(0f, 0f, 180f));
         if (OnStateChangedToInitial != null) OnStateChangedToInitial.Invoke();
     }
 
     [ClientRpc]
     public void ChangeStateToStartClientRpc()
     {
-        if (!IsHost) Camera.main.transform.Rotate(new Vector3(0f, 0f, 180f));
         Debug.Log("Changing state to start...");
-        currentState.Value = GameState.start;
+        if (IsHost) currentState.Value = GameState.start;
         if (OnStateChangedToStart != null) OnStateChangedToStart.Invoke();
     }
 
@@ -104,17 +111,21 @@ public class GameStates : NetworkBehaviour
     public void ChangeStateToHost1ClientRpc()
     {
         Debug.Log("Changing state to Host1...");
-        currentState.Value = GameState.host1;
-        if (OnStateChangedToHost1 != null) OnStateChangedToHost1.Invoke();
-
+        if (IsHost)
+        {
+            currentState.Value = GameState.host1;
+            FlowManager.Instance.IncrementTurnCounterServerRpc();
+            FlowManager.Instance.IncrementHostEnergyServerRpc();
+        }
         CardManager.Instance.HostDrawCardClientRpc();
+        if (OnStateChangedToHost1 != null) OnStateChangedToHost1.Invoke();
     }
 
     [ClientRpc]
     public void ChangeStateToHost2ClientRpc()
     {
         Debug.Log("Changing state to Host2...");
-        currentState.Value = GameState.host2;
+        if (IsHost) currentState.Value = GameState.host2;
         if (OnStateChangedToHost2 != null) OnStateChangedToHost2.Invoke();
     }
 
@@ -122,7 +133,7 @@ public class GameStates : NetworkBehaviour
     public void ChangeStateToHost3ClientRpc()
     {
         Debug.Log("Changing state to Host3...");
-        currentState.Value = GameState.host3;
+        if (IsHost) currentState.Value = GameState.host3;
         if (OnStateChangedToHost3 != null) OnStateChangedToHost3.Invoke();
     }
 
@@ -130,17 +141,20 @@ public class GameStates : NetworkBehaviour
     public void ChangeStateToClient1ClientRpc()
     {
         Debug.Log("Changing state to Client1...");
-        currentState.Value = GameState.client1;
-        if (OnStateChangedToClient1 != null) OnStateChangedToClient1.Invoke();
-
+        if (IsHost)
+        {
+            currentState.Value = GameState.client1;
+            FlowManager.Instance.IncrementClientEnergyServerRpc();
+        }
         CardManager.Instance.ClientDrawCardClientRpc();
+        if (OnStateChangedToClient1 != null) OnStateChangedToClient1.Invoke();
     }
 
     [ClientRpc]
     public void ChangeStateToClient2ClientRpc()
     {
         Debug.Log("Changing state to Client2...");
-        currentState.Value = GameState.client2;
+        if (IsHost) currentState.Value = GameState.client2;
         if (OnStateChangedToClient2 != null) OnStateChangedToClient2.Invoke();
     }
 
@@ -148,7 +162,7 @@ public class GameStates : NetworkBehaviour
     public void ChangeStateToClient3ClientRpc()
     {
         Debug.Log("Changing state to Client3...");
-        currentState.Value = GameState.client3;
+        if (IsHost) currentState.Value = GameState.client3;
         if (OnStateChangedToClient3 != null) OnStateChangedToClient3.Invoke();
     }
 
@@ -156,7 +170,7 @@ public class GameStates : NetworkBehaviour
     public void ChangeStateToEndClientRpc()
     {
         Debug.Log("Changing state to end...");
-        currentState.Value = GameState.end;
+        if (IsHost) currentState.Value = GameState.end;
         if (OnStateChangedToEnd != null) OnStateChangedToEnd.Invoke();
     }
 
@@ -164,8 +178,7 @@ public class GameStates : NetworkBehaviour
     public void ChangeStateToLoadingClientRpc()
     {
         Debug.Log("Changing state to loading...");
-        currentState.Value = GameState.loading;
+        if (IsHost) currentState.Value = GameState.loading;
         if (OnStateChangedToLoading != null) OnStateChangedToLoading.Invoke();
-
     }
 }

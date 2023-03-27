@@ -11,9 +11,13 @@ public class InGameUI : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI playerEnergy;
     [SerializeField]
+    private TextMeshProUGUI playerTimer;
+    [SerializeField]
     private TextMeshProUGUI opponentName;
     [SerializeField]
     private TextMeshProUGUI opponentEnergy;
+    [SerializeField]
+    private TextMeshProUGUI opponentTimer;
     [SerializeField]
     private Button endTurnButton;
     [SerializeField]
@@ -25,12 +29,20 @@ public class InGameUI : MonoBehaviour
     [SerializeField]
     private GameObject panel;
 
+    private void Awake()
+    {
+        FlowManager.Instance.OnTurnCounterUpdate += UpdateTurnCounter;
+        FlowManager.Instance.OnPlayerEnergyUpdate += UpdatePlayerEnergy;
+        FlowManager.Instance.OnPlayerTimerUpdate += UpdatePlayerTimer;
+        FlowManager.Instance.OnOpponentEnergyUpdate += UpdateOpponentEnergy;
+        FlowManager.Instance.OnOpponentTimerUpdate += UpdateOpponentTimer;
+    }
+
     private void OnEnable()
     {
         settingsButton.onClick.AddListener(OpenSettings);
         closeSettingsButton.onClick.AddListener(CloseSettings);
         disconnectButton.onClick.AddListener(DisconnectFromGame);
-        // endTurnButton.onClick.AddListener(EndTurn);
     }
 
     private void OnDisable()
@@ -38,7 +50,31 @@ public class InGameUI : MonoBehaviour
         settingsButton.onClick.RemoveListener(OpenSettings);
         closeSettingsButton.onClick.RemoveListener(CloseSettings);
         disconnectButton.onClick.RemoveListener(DisconnectFromGame);
-        // endTurnButton.onClick.RemoveListener(EndTurn);
+    }
+
+    private void UpdateTurnCounter(int prev, int next)
+    {
+        Debug.Log("Turn counter is not yet implemented.");
+    }
+
+    private void UpdatePlayerEnergy(int prev, int next)
+    {
+        playerEnergy.text = "E-" + next.ToString();
+    }
+
+    private void UpdateOpponentEnergy(int prev, int next)
+    {
+        opponentEnergy.text = "E-" + next.ToString();
+    }
+
+    private void UpdatePlayerTimer(int prev, int next)
+    {
+        playerTimer.text = "T-" + next.ToString();
+    }
+
+    private void UpdateOpponentTimer(int prev, int next)
+    {
+        opponentTimer.text = "T-" + next.ToString();
     }
 
     private void OpenSettings()
@@ -52,11 +88,6 @@ public class InGameUI : MonoBehaviour
     }
 
     private void DisconnectFromGame()
-    {
-        
-    }
-
-    private void EndTurn()
     {
         
     }

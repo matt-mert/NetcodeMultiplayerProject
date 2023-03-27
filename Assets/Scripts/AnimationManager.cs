@@ -26,7 +26,7 @@ public class AnimationManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        GameStates.Instance.OnStateChangedToStart += InitializeLightsClientRpc;
+        StatesManager.Instance.OnStateChangedToStart += InitializeLightsClientRpc;
     }
 
     [ClientRpc]
